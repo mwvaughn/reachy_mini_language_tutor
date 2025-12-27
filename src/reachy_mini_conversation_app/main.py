@@ -49,6 +49,8 @@ def run(
     """Run the Reachy Mini conversation app."""
     # Putting these dependencies here makes the dashboard faster to load when the conversation app is installed
     from reachy_mini_conversation_app.moves import MovementManager
+    from reachy_mini_conversation_app.config import config
+    from reachy_mini_conversation_app.memory import TutorMemory
     from reachy_mini_conversation_app.console import LocalStream
     from reachy_mini_conversation_app.openai_realtime import OpenaiRealtimeHandler
     from reachy_mini_conversation_app.tools.core_tools import ToolDependencies
@@ -96,12 +98,19 @@ def run(
 
     head_wobbler = HeadWobbler(set_speech_offsets=movement_manager.set_speech_offsets)
 
+    # Initialize memory manager if API key is available
+    memory_manager = None
+    if config.SUPERMEMORY_API_KEY:
+        memory_manager = TutorMemory(config.SUPERMEMORY_API_KEY)
+        logger.info("Memory manager initialized with SuperMemory.AI")
+
     deps = ToolDependencies(
         reachy_mini=robot,
         movement_manager=movement_manager,
         camera_worker=camera_worker,
         vision_manager=vision_manager,
         head_wobbler=head_wobbler,
+        memory_manager=memory_manager,
     )
     current_file_path = os.path.dirname(os.path.abspath(__file__))
     logger.debug(f"Current file absolute path: {current_file_path}")

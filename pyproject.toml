@@ -23,6 +23,9 @@ dependencies = [
     #OpenAI
     "openai>=2.1",
 
+    #Memory
+    "supermemory",
+
     #Reachy mini
     "reachy_mini_dances_library",
     "reachy_mini_toolbox",

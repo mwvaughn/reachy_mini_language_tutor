@@ -232,11 +232,35 @@ class OpenaiRealtimeHandler(AsyncStreamHandler):
     async def _run_realtime_session(self) -> None:
         """Establish and manage a single realtime session."""
         async with self.client.realtime.connect(model=config.MODEL_NAME) as conn:
+            # Get memory context if available
+            memory_context = ""
+            if self.deps and self.deps.memory_manager:
+                try:
+                    memory_context = await self.deps.memory_manager.get_context()
+                    if memory_context:
+                        logger.info("Loaded memory context for session")
+                except Exception as e:
+                    logger.warning("Failed to load memory context: %s", e)
+
+            # Build instructions with optional memory context
+            base_instructions = get_session_instructions()
+            if memory_context:
+                enhanced_instructions = f"""## LEARNER MEMORY
+The following is what you remember about this learner from previous sessions:
+
+{memory_context}
+
+---
+
+{base_instructions}"""
+            else:
+                enhanced_instructions = base_instructions
+
             try:
                 await conn.session.update(
                     session={
                         "type": "realtime",
-                        "instructions": get_session_instructions(),
+                        "instructions": enhanced_instructions,
                         "audio": {
                             "input": {
                                 "format": {
@@ -346,10 +370,28 @@ class OpenaiRealtimeHandler(AsyncStreamHandler):
 
                     await self.output_queue.put(AdditionalOutputs({"role": "user", "content": event.transcript}))
 
+                    # Store user transcript in memory (fire and forget)
+                    if self.deps and self.deps.memory_manager and event.transcript:
+                        asyncio.create_task(
+                            self.deps.memory_manager.store(
+                                f"Learner said: {event.transcript}",
+                                category="conversation",
+                            )
+                        )
+
                 # Handle assistant transcription
                 if event.type in ("response.audio_transcript.done", "response.output_audio_transcript.done"):
                     logger.debug(f"Assistant transcript: {event.transcript}")
                     await self.output_queue.put(AdditionalOutputs({"role": "assistant", "content": event.transcript}))
+
+                    # Store assistant transcript in memory (fire and forget)
+                    if self.deps and self.deps.memory_manager and event.transcript:
+                        asyncio.create_task(
+                            self.deps.memory_manager.store(
+                                f"Tutor said: {event.transcript}",
+                                category="conversation",
+                            )
+                        )
 
                 # Handle audio delta
                 if event.type in ("response.audio.delta", "response.output_audio.delta"):

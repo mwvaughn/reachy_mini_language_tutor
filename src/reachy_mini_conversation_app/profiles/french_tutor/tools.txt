@@ -13,3 +13,7 @@ camera
 
 # Idle behavior
 do_nothing
+
+# Memory tools for persistent learning
+recall
+remember
