@@ -11,6 +11,12 @@ def parse_args() -> Tuple[argparse.Namespace, list]:  # type: ignore
     """Parse command line arguments."""
     parser = argparse.ArgumentParser("Reachy Mini Conversation App")
     parser.add_argument(
+        "--profile",
+        type=str,
+        default=None,
+        help="Personality profile to use (e.g., french_tutor, chip, ember)",
+    )
+    parser.add_argument(
         "--head-tracker",
         choices=["yolo", "mediapipe", None],
         default=None,

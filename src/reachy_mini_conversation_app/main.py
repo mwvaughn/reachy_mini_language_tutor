@@ -19,6 +19,7 @@ from reachy_mini_conversation_app.utils import (
     setup_logger,
     handle_vision_stuff,
 )
+from reachy_mini_conversation_app.config import set_custom_profile
 
 
 def update_chatbot(chatbot: List[Dict[str, Any]], response: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -30,6 +31,11 @@ def update_chatbot(chatbot: List[Dict[str, Any]], response: Dict[str, Any]) -> L
 def main() -> None:
     """Entrypoint for the Reachy Mini conversation app."""
     args, _ = parse_args()
+
+    # Set profile from CLI argument if provided
+    if args.profile:
+        set_custom_profile(args.profile)
+
     run(args)
 
 
@@ -214,6 +220,10 @@ class ReachyMiniConversationApp(ReachyMiniApp):  # type: ignore[misc]
         asyncio.set_event_loop(loop)
 
         args, _ = parse_args()
+
+        # Set profile from CLI argument if provided
+        if args.profile:
+            set_custom_profile(args.profile)
 
         # is_wireless = reachy_mini.client.get_status()["wireless_version"]
         # args.head_tracker = None if is_wireless else "mediapipe"
