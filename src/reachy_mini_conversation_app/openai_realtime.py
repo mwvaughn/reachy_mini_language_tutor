@@ -17,7 +17,7 @@ from scipy.signal import resample
 from websockets.exceptions import ConnectionClosedError
 
 from reachy_mini_conversation_app.config import config
-from reachy_mini_conversation_app.prompts import get_session_voice, get_session_instructions
+from reachy_mini_conversation_app.prompts import get_session_voice, get_session_language, get_session_instructions
 from reachy_mini_conversation_app.tools.core_tools import (
     ToolDependencies,
     get_tool_specs,
@@ -243,7 +243,7 @@ class OpenaiRealtimeHandler(AsyncStreamHandler):
                                     "type": "audio/pcm",
                                     "rate": self.input_sample_rate,
                                 },
-                                "transcription": {"model": "gpt-4o-transcribe", "language": "en"},
+                                "transcription": {"model": "gpt-4o-transcribe", "language": get_session_language()},
                                 "turn_detection": {
                                     "type": "server_vad",
                                     "interrupt_response": True,
@@ -262,9 +262,10 @@ class OpenaiRealtimeHandler(AsyncStreamHandler):
                     },
                 )
                 logger.info(
-                    "Realtime session initialized with profile=%r voice=%r",
+                    "Realtime session initialized with profile=%r voice=%r language=%r",
                     getattr(config, "REACHY_MINI_CUSTOM_PROFILE", None),
                     get_session_voice(),
+                    get_session_language(),
                 )
                 # If we reached here, the session update succeeded which implies the API key worked.
                 # Persist the key to a newly created .env (copied from .env.example) if needed.

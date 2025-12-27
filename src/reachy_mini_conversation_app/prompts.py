@@ -13,6 +13,7 @@ PROFILES_DIRECTORY = Path(__file__).parent / "profiles"
 PROMPTS_LIBRARY_DIRECTORY = Path(__file__).parent / "prompts"
 INSTRUCTIONS_FILENAME = "instructions.txt"
 VOICE_FILENAME = "voice.txt"
+LANGUAGE_FILENAME = "language.txt"
 
 
 def _expand_prompt_includes(content: str) -> str:
@@ -99,6 +100,27 @@ def get_session_voice(default: str = "cedar") -> str:
         if voice_file.exists():
             voice = voice_file.read_text(encoding="utf-8").strip()
             return voice or default
+    except Exception:
+        pass
+    return default
+
+
+def get_session_language(default: str = "en") -> str:
+    """Resolve the transcription language for the session.
+
+    If a custom profile is selected and contains a language.txt, return its
+    trimmed content; otherwise return the provided default ("en").
+
+    Supports ISO 639-1 language codes: en, fr, es, de, etc.
+    """
+    profile = config.REACHY_MINI_CUSTOM_PROFILE
+    if not profile:
+        return default
+    try:
+        language_file = PROFILES_DIRECTORY / profile / LANGUAGE_FILENAME
+        if language_file.exists():
+            language = language_file.read_text(encoding="utf-8").strip().lower()
+            return language or default
     except Exception:
         pass
     return default
