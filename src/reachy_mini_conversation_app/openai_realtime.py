@@ -73,6 +73,9 @@ class OpenaiRealtimeHandler(AsyncStreamHandler):
         self._shutdown_requested: bool = False
         self._connected_event: asyncio.Event = asyncio.Event()
 
+        # Randomized idle timeout for more natural behavior (±25% variance)
+        self._next_idle_timeout = config.IDLE_SIGNAL_TIMEOUT * random.uniform(0.75, 1.25)
+
     def copy(self) -> "OpenaiRealtimeHandler":
         """Create a copy of the handler."""
         return OpenaiRealtimeHandler(self.deps, self.gradio_mode, self.instance_path)
@@ -586,11 +589,11 @@ The following is what you remember about this learner from previous sessions:
         # sends to the stream the stuff put in the output queue by the openai event handler
         # This is called periodically by the fastrtc Stream
 
-        # Handle idle - configurable timeout and enable/disable toggle
+        # Handle idle - configurable timeout and enable/disable toggle with randomization
         idle_duration = asyncio.get_event_loop().time() - self.last_activity_time
         if (
             config.ENABLE_IDLE_SIGNALS
-            and idle_duration > config.IDLE_SIGNAL_TIMEOUT
+            and idle_duration > self._next_idle_timeout
             and self.deps.movement_manager.is_idle()
         ):
             try:
@@ -600,6 +603,8 @@ The following is what you remember about this learner from previous sessions:
                 return None
 
             self.last_activity_time = asyncio.get_event_loop().time()  # avoid repeated resets
+            # Generate new randomized timeout for next idle signal (±25% variance)
+            self._next_idle_timeout = config.IDLE_SIGNAL_TIMEOUT * random.uniform(0.75, 1.25)
 
         return await wait_for_item(self.output_queue)  # type: ignore[no-any-return]
 
