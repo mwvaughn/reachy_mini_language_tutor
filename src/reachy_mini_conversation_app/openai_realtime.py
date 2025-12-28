@@ -370,28 +370,10 @@ The following is what you remember about this learner from previous sessions:
 
                     await self.output_queue.put(AdditionalOutputs({"role": "user", "content": event.transcript}))
 
-                    # Store user transcript in memory (fire and forget)
-                    if self.deps and self.deps.memory_manager and event.transcript:
-                        asyncio.create_task(
-                            self.deps.memory_manager.store(
-                                f"Learner said: {event.transcript}",
-                                category="conversation",
-                            )
-                        )
-
                 # Handle assistant transcription
                 if event.type in ("response.audio_transcript.done", "response.output_audio_transcript.done"):
                     logger.debug(f"Assistant transcript: {event.transcript}")
                     await self.output_queue.put(AdditionalOutputs({"role": "assistant", "content": event.transcript}))
-
-                    # Store assistant transcript in memory (fire and forget)
-                    if self.deps and self.deps.memory_manager and event.transcript:
-                        asyncio.create_task(
-                            self.deps.memory_manager.store(
-                                f"Tutor said: {event.transcript}",
-                                category="conversation",
-                            )
-                        )
 
                 # Handle audio delta
                 if event.type in ("response.audio.delta", "response.output_audio.delta"):
