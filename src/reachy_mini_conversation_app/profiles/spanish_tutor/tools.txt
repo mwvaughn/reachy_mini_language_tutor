@@ -1,0 +1,19 @@
+# Spanish Tutor - Full expressiveness enabled
+
+# Motion tools for engagement and celebration
+dance
+stop_dance
+play_emotion
+stop_emotion
+move_head
+head_tracking
+
+# Camera for visual Spanish practice
+camera
+
+# Idle behavior
+do_nothing
+
+# Memory tools for persistent learning
+recall
+remember

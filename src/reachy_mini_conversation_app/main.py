@@ -102,7 +102,8 @@ def run(
     if config.SUPERMEMORY_API_KEY:
         from reachy_mini_conversation_app.memory import TutorMemory
 
-        memory_manager = TutorMemory(config.SUPERMEMORY_API_KEY)
+        profile_name = config.REACHY_MINI_CUSTOM_PROFILE or "default"
+        memory_manager = TutorMemory(config.SUPERMEMORY_API_KEY, profile_name=profile_name)
         logger.info("Memory manager initialized with SuperMemory.AI")
 
     deps = ToolDependencies(

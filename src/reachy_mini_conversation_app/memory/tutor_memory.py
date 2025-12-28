@@ -1,4 +1,4 @@
-"""Memory manager for the French tutor using SuperMemory.AI."""
+"""Memory manager for language tutors using SuperMemory.AI."""
 
 from __future__ import annotations
 import logging
@@ -11,24 +11,23 @@ logger = logging.getLogger(__name__)
 
 
 class TutorMemory:
-    """Manages persistent memory for the French tutor using SuperMemory.AI.
+    """Manages persistent memory for language tutors using SuperMemory.AI.
 
     This class provides methods to store and retrieve memories about the learner,
     enabling personalized tutoring sessions that build on previous interactions.
     """
 
-    # Single user mode - hardcoded user ID
-    USER_ID = "french_tutor_learner"
-
-    def __init__(self, api_key: str) -> None:
+    def __init__(self, api_key: str, profile_name: str = "default") -> None:
         """Initialize the memory manager with SuperMemory API key.
 
         Args:
             api_key: SuperMemory.AI API key.
+            profile_name: Profile name for user ID (default: "default").
 
         """
         self.client = AsyncSupermemory(api_key=api_key)
-        logger.info("TutorMemory initialized with SuperMemory.AI")
+        self.user_id = f"{profile_name}_learner"
+        logger.info(f"TutorMemory initialized for profile: {profile_name}")
 
     async def get_context(self, limit: int = 10) -> str:
         """Retrieve relevant memories to inject as session context.
@@ -42,7 +41,7 @@ class TutorMemory:
         """
         try:
             response = await self.client.search.execute(
-                q="French learning progress, preferences, and recent sessions",
+                q="Learning progress, preferences, and recent sessions",
             )
             return self._format_context(response.results[:limit] if response.results else [])
         except Exception as e:
@@ -59,7 +58,7 @@ class TutorMemory:
         """
         try:
             # Include metadata in the content for searchability
-            formatted_content = f"[{category}] [user:{self.USER_ID}] {content}"
+            formatted_content = f"[{category}] [user:{self.user_id}] {content}"
             await self.client.memories.add(content=formatted_content)
             logger.debug("Stored memory: %s", content[:50])
         except Exception as e:
