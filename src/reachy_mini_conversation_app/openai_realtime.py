@@ -76,6 +76,9 @@ class OpenaiRealtimeHandler(AsyncStreamHandler):
         # Randomized idle timeout for more natural behavior (±25% variance)
         self._next_idle_timeout = config.IDLE_SIGNAL_TIMEOUT * random.uniform(0.75, 1.25)
 
+        # Proactive greeting flag (to send greeting once after session starts)
+        self._proactive_greeting_sent = False
+
     def copy(self) -> "OpenaiRealtimeHandler":
         """Create a copy of the handler."""
         return OpenaiRealtimeHandler(self.deps, self.gradio_mode, self.instance_path)
@@ -310,17 +313,18 @@ The following is what you remember about this learner from previous sessions:
             except Exception:
                 pass
 
-            # Send proactive greeting if profile has it enabled
-            from reachy_mini_conversation_app.prompts import get_profile_proactive_mode
-
-            if get_profile_proactive_mode():
-                logger.info("Proactive mode enabled - sending initial greeting")
-                await self._send_proactive_greeting()
-            else:
-                logger.info("Proactive mode disabled - waiting for user input")
-
             async for event in self.connection:
                 logger.debug(f"OpenAI event: {event.type}")
+
+                # Send proactive greeting when session is created
+                if event.type == "session.created" and not self._proactive_greeting_sent:
+                    from reachy_mini_conversation_app.prompts import get_profile_proactive_mode
+
+                    if get_profile_proactive_mode():
+                        logger.info("Session created - sending proactive greeting")
+                        await self._send_proactive_greeting()
+                        self._proactive_greeting_sent = True
+
                 if event.type == "input_audio_buffer.speech_started":
                     if hasattr(self, "_clear_queue") and callable(self._clear_queue):
                         self._clear_queue()
