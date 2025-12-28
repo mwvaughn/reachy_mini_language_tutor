@@ -50,7 +50,6 @@ def run(
     # Putting these dependencies here makes the dashboard faster to load when the conversation app is installed
     from reachy_mini_conversation_app.moves import MovementManager
     from reachy_mini_conversation_app.config import config
-    from reachy_mini_conversation_app.memory import TutorMemory
     from reachy_mini_conversation_app.console import LocalStream
     from reachy_mini_conversation_app.openai_realtime import OpenaiRealtimeHandler
     from reachy_mini_conversation_app.tools.core_tools import ToolDependencies
@@ -101,6 +100,8 @@ def run(
     # Initialize memory manager if API key is available
     memory_manager = None
     if config.SUPERMEMORY_API_KEY:
+        from reachy_mini_conversation_app.memory import TutorMemory
+
         memory_manager = TutorMemory(config.SUPERMEMORY_API_KEY)
         logger.info("Memory manager initialized with SuperMemory.AI")
 
