@@ -586,9 +586,13 @@ The following is what you remember about this learner from previous sessions:
         # sends to the stream the stuff put in the output queue by the openai event handler
         # This is called periodically by the fastrtc Stream
 
-        # Handle idle
+        # Handle idle - configurable timeout and enable/disable toggle
         idle_duration = asyncio.get_event_loop().time() - self.last_activity_time
-        if idle_duration > 15.0 and self.deps.movement_manager.is_idle():
+        if (
+            config.ENABLE_IDLE_SIGNALS
+            and idle_duration > config.IDLE_SIGNAL_TIMEOUT
+            and self.deps.movement_manager.is_idle()
+        ):
             try:
                 await self.send_idle_signal(idle_duration)
             except Exception as e:

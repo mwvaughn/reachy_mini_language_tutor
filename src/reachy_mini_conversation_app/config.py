@@ -37,6 +37,10 @@ class Config:
     REACHY_MINI_CUSTOM_PROFILE = os.getenv("REACHY_MINI_CUSTOM_PROFILE")
     logger.debug(f"Custom Profile: {REACHY_MINI_CUSTOM_PROFILE}")
 
+    # Idle signal configuration (cost optimization)
+    ENABLE_IDLE_SIGNALS = os.getenv("ENABLE_IDLE_SIGNALS", "true").lower() == "true"
+    IDLE_SIGNAL_TIMEOUT = int(os.getenv("IDLE_SIGNAL_TIMEOUT", "300"))  # Default 5 minutes
+
 
 config = Config()
 
