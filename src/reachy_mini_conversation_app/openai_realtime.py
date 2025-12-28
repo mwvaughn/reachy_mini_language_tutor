@@ -306,6 +306,16 @@ The following is what you remember about this learner from previous sessions:
                 self._connected_event.set()
             except Exception:
                 pass
+
+            # Send proactive greeting if profile has it enabled
+            from reachy_mini_conversation_app.prompts import get_profile_proactive_mode
+
+            if get_profile_proactive_mode():
+                logger.info("Proactive mode enabled - sending initial greeting")
+                await self._send_proactive_greeting()
+            else:
+                logger.info("Proactive mode disabled - waiting for user input")
+
             async for event in self.connection:
                 logger.debug(f"OpenAI event: {event.type}")
                 if event.type == "input_audio_buffer.speech_started":
@@ -492,6 +502,43 @@ The following is what you remember about this learner from previous sessions:
                         await self.output_queue.put(
                             AdditionalOutputs({"role": "assistant", "content": f"[error] {msg}"})
                         )
+
+    async def _send_proactive_greeting(self) -> None:
+        """Send a proactive greeting to initiate conversation.
+
+        This injects a user message that prompts the model to introduce itself
+        and start the conversation, then forces response generation.
+
+        Used for tutor profiles where the robot should speak first.
+        """
+        if self.connection is None:
+            logger.warning("Cannot send proactive greeting: no active connection")
+            return
+
+        try:
+            # Inject a user message that triggers the greeting
+            await self.connection.conversation.item.create(
+                item={
+                    "type": "message",
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "input_text",
+                            "text": (
+                                "[System: The learner has just connected and is ready to practice. "
+                                "Greet them warmly and start the conversation as instructed in your personality.]"
+                            ),
+                        },
+                    ],
+                },
+            )
+
+            # Force immediate response generation
+            await self.connection.response.create(response={})
+            logger.info("Proactive greeting initiated")
+
+        except Exception as e:
+            logger.error("Failed to send proactive greeting: %s", e)
 
     # Microphone receive
     async def receive(self, frame: Tuple[int, NDArray[np.int16]]) -> None:

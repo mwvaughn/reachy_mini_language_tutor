@@ -14,6 +14,7 @@ PROMPTS_LIBRARY_DIRECTORY = Path(__file__).parent / "prompts"
 INSTRUCTIONS_FILENAME = "instructions.txt"
 VOICE_FILENAME = "voice.txt"
 LANGUAGE_FILENAME = "language.txt"
+PROACTIVE_FILENAME = "proactive.txt"
 
 
 def _expand_prompt_includes(content: str) -> str:
@@ -29,9 +30,9 @@ def _expand_prompt_includes(content: str) -> str:
     # Pattern to match [<name>] where name is a valid file stem (alphanumeric, underscores, hyphens)
     # pattern = re.compile(r'^\[([a-zA-Z0-9_-]+)\]$')
     # Allow slashes for subdirectories
-    pattern = re.compile(r'^\[([a-zA-Z0-9/_-]+)\]$')
+    pattern = re.compile(r"^\[([a-zA-Z0-9/_-]+)\]$")
 
-    lines = content.split('\n')
+    lines = content.split("\n")
     expanded_lines = []
 
     for line in lines:
@@ -57,7 +58,7 @@ def _expand_prompt_includes(content: str) -> str:
         else:
             expanded_lines.append(line)
 
-    return '\n'.join(expanded_lines)
+    return "\n".join(expanded_lines)
 
 
 def get_session_instructions() -> str:
@@ -121,6 +122,30 @@ def get_session_language(default: str = "en") -> str:
         if language_file.exists():
             language = language_file.read_text(encoding="utf-8").strip().lower()
             return language or default
+    except Exception:
+        pass
+    return default
+
+
+def get_profile_proactive_mode(default: bool = False) -> bool:
+    """Check if current profile has proactive greeting enabled.
+
+    If a custom profile is selected and contains a proactive.txt file
+    with "true" (case-insensitive), returns True. Otherwise returns the
+    provided default (False).
+
+    Returns:
+        True if profile has proactive.txt containing 'true', False otherwise.
+
+    """
+    profile = config.REACHY_MINI_CUSTOM_PROFILE
+    if not profile:
+        return default
+    try:
+        proactive_file = PROFILES_DIRECTORY / profile / PROACTIVE_FILENAME
+        if proactive_file.exists():
+            content = proactive_file.read_text(encoding="utf-8").strip().lower()
+            return content == "true"
     except Exception:
         pass
     return default

@@ -33,6 +33,7 @@ def test_format_timestamp_uses_wall_clock() -> None:
     year = int(formatted[1:5])
     assert year == datetime.now(timezone.utc).year
 
+
 @pytest.mark.asyncio
 async def test_start_up_retries_on_abrupt_close(monkeypatch: Any, caplog: Any) -> None:
     """First connection dies with ConnectionClosedError during iteration -> retried.
@@ -47,7 +48,9 @@ async def test_start_up_retries_on_abrupt_close(monkeypatch: Any, caplog: Any) -
     monkeypatch.setattr(rt_mod, "ConnectionClosedError", FakeCCE)
 
     # Make asyncio.sleep return immediately (for backoff)
-    async def _fast_sleep(*_a: Any, **_kw: Any) -> None: return None
+    async def _fast_sleep(*_a: Any, **_kw: Any) -> None:
+        return None
+
     monkeypatch.setattr(asyncio, "sleep", _fast_sleep, raising=False)
 
     attempt_counter = {"n": 0}
@@ -59,31 +62,48 @@ async def test_start_up_retries_on_abrupt_close(monkeypatch: Any, caplog: Any) -
             self._mode = mode
 
             class _Session:
-                async def update(self, **_kw: Any) -> None: return None
+                async def update(self, **_kw: Any) -> None:
+                    return None
+
             self.session = _Session()
 
             class _InputAudioBuffer:
-                async def append(self, **_kw: Any) -> None: return None
+                async def append(self, **_kw: Any) -> None:
+                    return None
+
             self.input_audio_buffer = _InputAudioBuffer()
 
             class _Item:
-                async def create(self, **_kw: Any) -> None: return None
+                async def create(self, **_kw: Any) -> None:
+                    return None
 
             class _Conversation:
                 item = _Item()
+
             self.conversation = _Conversation()
 
             class _Response:
-                async def create(self, **_kw: Any) -> None: return None
-                async def cancel(self, **_kw: Any) -> None: return None
+                async def create(self, **_kw: Any) -> None:
+                    return None
+
+                async def cancel(self, **_kw: Any) -> None:
+                    return None
+
             self.response = _Response()
 
-        async def __aenter__(self) -> "FakeConn": return self
-        async def __aexit__(self, exc_type: Any, exc: Any, tb: Any) -> bool: return False
-        async def close(self) -> None: return None
+        async def __aenter__(self) -> "FakeConn":
+            return self
+
+        async def __aexit__(self, exc_type: Any, exc: Any, tb: Any) -> bool:
+            return False
+
+        async def close(self) -> None:
+            return None
 
         # Async iterator protocol
-        def __aiter__(self) -> "FakeConn": return self
+        def __aiter__(self) -> "FakeConn":
+            return self
+
         async def __anext__(self) -> None:
             if self._mode == "raise_on_iter":
                 raise FakeCCE("abrupt close (simulated)")
@@ -96,7 +116,8 @@ async def test_start_up_retries_on_abrupt_close(monkeypatch: Any, caplog: Any) -
             return FakeConn(mode)
 
     class FakeClient:
-        def __init__(self, **_kw: Any) -> None: self.realtime = FakeRealtime()
+        def __init__(self, **_kw: Any) -> None:
+            self.realtime = FakeRealtime()
 
     # Patch the OpenAI client used by the handler
     monkeypatch.setattr(rt_mod, "AsyncOpenAI", FakeClient)
