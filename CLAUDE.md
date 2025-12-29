@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-Conversational AI application for the Reachy Mini robot integrating OpenAI's realtime API, vision processing, and choreographed motion. The app enables real-time audio conversations with the robot while coordinating dance moves, emotions, head tracking, and vision processing through a layered motion system.
+Reachy Language Partner - a language learning companion for the Reachy Mini robot. Practice conversational skills in French, Spanish, and other languages through natural dialogue with an expressive robot partner. Features persistent memory across sessions, proactive engagement, and gentle correction through recasting. Powered by OpenAI's realtime API, vision processing, and choreographed motion.
 
 ## Important Resources
 
@@ -116,19 +116,25 @@ User audio → OpenaiRealtimeHandler (24kHz mono WebRTC)
 | `vision/yolo_head_tracker.py` | YOLO-based face detection for head tracking |
 | `profiles/` | Personality profiles with `instructions.txt` + `tools.txt` + optional custom tools |
 
-## Personality/Profile System
+## Language Profile System
+
+Three language tutor profiles available in `profiles/`:
+- **`default`**: Generic language partner that adapts to any language
+- **`french_tutor`**: Delphine, a French conversation partner with cultural context
+- **`spanish_tutor`**: Sofia, a Mexican Spanish conversation partner
 
 Each profile in `src/reachy_mini_conversation_app/profiles/<name>/` contains:
 - **`instructions.txt`**: System prompt (supports `[placeholder]` syntax to pull from `prompts/`)
 - **`tools.txt`**: Enabled tools list (comment with `#`, one per line)
+- **`proactive.txt`**: Set to `true` for proactive greeting mode
+- **`language.txt`**: ISO language code for transcription (e.g., `es`, `fr`)
+- **`voice.txt`**: Voice name (e.g., `coral`, `sage`)
 - **Optional Python files**: Custom tool implementations (subclass `Tool` from `tools/core_tools.py`)
 
 Load profiles via:
 - CLI: `--profile <name>`
 - Environment: `REACHY_MINI_CUSTOM_PROFILE=<name>` in `.env`
 - Gradio UI: Select and hot-reload instructions (tools require restart)
-
-17+ pre-made profiles available in `profiles/` (detective, butler, cosmic_kitchen, mars_rover, etc.)
 
 ## Configuration (.env)
 
@@ -139,11 +145,12 @@ OPENAI_API_KEY=your_key_here
 
 Optional:
 ```
+REACHY_MINI_CUSTOM_PROFILE=french_tutor                   # Language profile to load
+SUPERMEMORY_API_KEY=your_key_here                         # Persistent memory for tutors
 MODEL_NAME=gpt-realtime                                   # Override realtime model
 HF_HOME=./cache                                           # Local VLM cache (--local-vision)
 HF_TOKEN=your_hf_token                                    # For Hugging Face models/emotions
 LOCAL_VISION_MODEL=HuggingFaceTB/SmolVLM2-2.2B-Instruct  # Local vision model path
-REACHY_MINI_CUSTOM_PROFILE=default                        # Profile to load
 ```
 
 ## Available LLM Tools
@@ -158,6 +165,8 @@ REACHY_MINI_CUSTOM_PROFILE=default                        # Profile to load
 | `play_emotion` | Play recorded emotion clip | Core + `HF_TOKEN` |
 | `stop_emotion` | Clear emotion queue | Core |
 | `do_nothing` | Explicitly remain idle | Core |
+| `recall` | Search persistent memory for learner information | `SUPERMEMORY_API_KEY` |
+| `remember` | Store observations about learner for future sessions | `SUPERMEMORY_API_KEY` |
 
 ## Code Style Conventions
 
@@ -171,11 +180,11 @@ REACHY_MINI_CUSTOM_PROFILE=default                        # Profile to load
 ## Development Tips
 
 ### Adding Custom Tools
-1. Create Python file in `profiles/<profile_name>/` (e.g., `sweep_look.py`)
+1. Create Python file in `profiles/<profile_name>/` (e.g., `my_tool.py`)
 2. Subclass `reachy_mini_conversation_app.tools.core_tools.Tool`
 3. Implement `name`, `description`, `parameters`, and `__call__()` method
 4. Add tool name to `profiles/<profile_name>/tools.txt`
-5. See `profiles/example/sweep_look.py` for reference
+5. See `profiles/french_tutor/recall.py` and `profiles/french_tutor/remember.py` for examples
 
 ### Motion Control Principles
 - **100Hz loop is sacred** - never block the `MovementManager` thread

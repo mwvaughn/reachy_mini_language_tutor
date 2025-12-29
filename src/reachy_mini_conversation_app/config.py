@@ -18,7 +18,7 @@ else:
 
 
 class Config:
-    """Configuration class for the conversation app."""
+    """Configuration class for Reachy Language Partner."""
 
     # Required
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # The key is downloaded in console.py if needed

@@ -1,19 +1,20 @@
 ---
-title: Reachy Mini Conversation App
-emoji: 🎤
+title: Reachy Language Partner
+emoji: 🗣️
 colorFrom: red
 colorTo: blue
 sdk: static
 pinned: false
-short_description: Talk with Reachy Mini !
+short_description: Practice languages with Reachy Mini!
 tags:
  - reachy_mini
  - reachy_mini_python_app
+ - language_learning
 ---
 
-# Reachy Mini conversation app
+# Reachy Language Partner
 
-Conversational app for the Reachy Mini robot combining OpenAI's realtime APIs, vision pipelines, and choreographed motion libraries.
+A language learning companion for the Reachy Mini robot. Practice conversational skills in French, Spanish, and other languages through natural dialogue with an expressive robot partner. Powered by OpenAI's realtime APIs, vision pipelines, and choreographed motion libraries.
 
 ![Reachy Mini Dance](docs/assets/reachy_mini_dance.gif)
 
@@ -26,10 +27,12 @@ The app follows a layered architecture connecting the user, AI services, and rob
 </p>
 
 ## Overview
+- **Language learning profiles** for French, Spanish, and a customizable default that adapts to any language.
+- **Persistent memory** across sessions - the robot remembers your progress, struggles, and preferences.
+- **Proactive engagement** - the robot starts conversations and helps when you're stuck.
 - Real-time audio conversation loop powered by the OpenAI realtime API and `fastrtc` for low-latency streaming.
-- Vision processing uses gpt-realtime by default (when camera tool is used), with optional local vision processing using SmolVLM2 model running on-device (CPU/GPU/MPS) via `--local-vision` flag.
 - Layered motion system queues primary moves (dances, emotions, goto poses, breathing) while blending speech-reactive wobble and face-tracking.
-- Async tool dispatch integrates robot motion, camera capture, and optional face-tracking capabilities through a Gradio web UI with live transcripts.
+- Vision processing uses gpt-realtime by default (when camera tool is used), with optional local vision processing using SmolVLM2 model.
 
 ## Installation
 
@@ -108,6 +111,8 @@ Some wheels (e.g. PyTorch) are large and require compatible CUDA or CPU builds�
 | Variable | Description |
 |----------|-------------|
 | `OPENAI_API_KEY` | Required. Grants access to the OpenAI realtime endpoint.
+| `REACHY_MINI_CUSTOM_PROFILE` | Language profile to use (e.g., `french_tutor`, `spanish_tutor`). Defaults to `default`.
+| `SUPERMEMORY_API_KEY` | Optional. Enables persistent memory across sessions for language tutors.
 | `MODEL_NAME` | Override the realtime model (defaults to `gpt-realtime`). Used for both conversation and vision (unless `--local-vision` flag is used).
 | `HF_HOME` | Cache directory for local Hugging Face downloads (only used with `--local-vision` flag, defaults to `./cache`).
 | `HF_TOKEN` | Optional token for Hugging Face models (only used with `--local-vision` flag, falls back to `huggingface-cli login`).
@@ -127,6 +132,7 @@ By default, the app runs in console mode for direct audio interaction. Use the `
 
 | Option | Default | Description |
 |--------|---------|-------------|
+| `--profile <name>` | `default` | Language profile to use (e.g., `french_tutor`, `spanish_tutor`). |
 | `--head-tracker {yolo,mediapipe}` | `None` | Select a face-tracking backend when a camera is available. YOLO is implemented locally, MediaPipe comes from the `reachy_mini_toolbox` package. Requires the matching optional extra. |
 | `--no-camera` | `False` | Run without camera capture or face tracking. |
 | `--local-vision` | `False` | Use local vision model (SmolVLM2) for periodic image processing instead of gpt-realtime vision. Requires `local_vision` extra to be installed. |
@@ -181,37 +187,65 @@ It probably means that the Reachy Mini's daemon isn't running. Install [Reachy M
 | `play_emotion` | Play a recorded emotion clip via Hugging Face assets. | Needs `HF_TOKEN` for the recorded emotions dataset. |
 | `stop_emotion` | Clear queued emotions. | Core install only. |
 | `do_nothing` | Explicitly remain idle. | Core install only. |
+| `recall` | Search persistent memory for learner information. | Requires `SUPERMEMORY_API_KEY`. |
+| `remember` | Store observations about learner for future sessions. | Requires `SUPERMEMORY_API_KEY`. |
 
-## Using custom profiles
-Create custom profiles with dedicated instructions and enabled tools! 
+## Language Profiles
 
-Set `REACHY_MINI_CUSTOM_PROFILE=<name>` to load `src/reachy_mini_conversation_app/profiles/<name>/` (see `.env.example`). If unset, the `default` profile is used.
+The app includes language tutor profiles with proactive engagement and persistent memory:
 
-Each profile requires two files: `instructions.txt` (prompt text) and `tools.txt` (list of allowed tools), and optionally contains custom tools implementations.
+| Profile | Description |
+|---------|-------------|
+| `default` | Generic language partner that adapts to any language you want to practice |
+| `french_tutor` | Delphine, a French conversation partner with cultural context |
+| `spanish_tutor` | Sofia, a Mexican Spanish conversation partner |
+
+Set `REACHY_MINI_CUSTOM_PROFILE=<name>` to load a profile (see `.env.example`). For example:
+
+```bash
+reachy-mini-conversation-app --profile french_tutor
+```
+
+## Creating Custom Profiles
+
+Create custom profiles with dedicated instructions and enabled tools.
+
+Each profile lives in `src/reachy_mini_conversation_app/profiles/<name>/` and requires:
+- `instructions.txt` - The system prompt
+- `tools.txt` - List of enabled tools (one per line)
+
+Optional files:
+- `proactive.txt` - Set to `true` for proactive greetings
+- `language.txt` - ISO language code for transcription (e.g., `es`, `fr`)
+- `voice.txt` - Voice name (e.g., `coral`, `sage`)
 
 ### Custom instructions
 Write plain-text prompts in `instructions.txt`. To reuse shared prompt pieces, add lines like:
 ```
-[passion_for_lobster_jokes]
-[identities/witty_identity]
+[identities/basic_info]
+[behaviors/silent_robot]
 ```
-Each placeholder pulls the matching file under `src/reachy_mini_conversation_app/prompts/` (nested paths allowed). See `src/reachy_mini_conversation_app/profiles/example/` for a reference layout.
+Each placeholder pulls the matching file under `src/reachy_mini_conversation_app/prompts/` (nested paths allowed). See `french_tutor` or `spanish_tutor` profiles for reference.
 
 ### Enabling tools
-List enabled tools in `tools.txt`, one per line; prefix with `#` to comment out. For example:
+List enabled tools in `tools.txt`, one per line; prefix with `#` to comment out. Language tutors typically enable:
 
 ```
+dance
 play_emotion
-# move_head
-
-# My custom tool defined locally
-sweep_look
+camera
+head_tracking
+move_head
+recall
+remember
+do_nothing
 ```
-Tools are resolved first from Python files in the profile folder (custom tools), then from the shared library `src/reachy_mini_conversation_app/tools/` (e.g., `dance`, `head_tracking`). 
+
+Tools are resolved first from Python files in the profile folder (custom tools), then from the shared library `src/reachy_mini_conversation_app/tools/`.
 
 ### Custom tools
-On top of built-in tools found in the shared library, you can implement custom tools specific to your profile by adding Python files in the profile folder. 
-Custom tools must subclass `reachy_mini_conversation_app.tools.core_tools.Tool` (see `profiles/example/sweep_look.py`).
+You can implement custom tools specific to your profile by adding Python files in the profile folder.
+Custom tools must subclass `reachy_mini_conversation_app.tools.core_tools.Tool`. See `french_tutor/recall.py` and `french_tutor/remember.py` for examples of memory tools.
 
 ### Edit personalities from the UI
 When running with `--gradio`, open the “Personality” accordion:

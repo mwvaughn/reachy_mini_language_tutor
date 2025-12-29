@@ -1,4 +1,4 @@
-"""Entrypoint for the Reachy Mini conversation app."""
+"""Entrypoint for Reachy Language Partner."""
 
 import os
 import sys
@@ -29,7 +29,7 @@ def update_chatbot(chatbot: List[Dict[str, Any]], response: Dict[str, Any]) -> L
 
 
 def main() -> None:
-    """Entrypoint for the Reachy Mini conversation app."""
+    """Entrypoint for Reachy Language Partner."""
     args, _ = parse_args()
 
     # Set profile from CLI argument if provided
@@ -46,7 +46,7 @@ def run(
     settings_app: Optional[FastAPI] = None,
     instance_path: Optional[str] = None,
 ) -> None:
-    """Run the Reachy Mini conversation app."""
+    """Run Reachy Language Partner."""
     # Putting these dependencies here makes the dashboard faster to load when the conversation app is installed
     from reachy_mini_conversation_app.moves import MovementManager
     from reachy_mini_conversation_app.config import config
@@ -56,7 +56,7 @@ def run(
     from reachy_mini_conversation_app.audio.head_wobbler import HeadWobbler
 
     logger = setup_logger(args.debug)
-    logger.info("Starting Reachy Mini Conversation App")
+    logger.info("Starting Reachy Language Partner")
 
     if args.no_camera and args.head_tracker is not None:
         logger.warning("Head tracking is not activated due to --no-camera.")
@@ -153,7 +153,7 @@ def run(
             ],
             additional_outputs=[chatbot],
             additional_outputs_handler=update_chatbot,
-            ui_args={"title": "Talk with Reachy Mini"},
+            ui_args={"title": "Reachy Language Partner"},
         )
         stream_manager = stream.ui
         if not settings_app:
@@ -220,13 +220,13 @@ def run(
 
 
 class ReachyMiniConversationApp(ReachyMiniApp):  # type: ignore[misc]
-    """Reachy Mini Apps entry point for the conversation app."""
+    """Reachy Mini Apps entry point for Reachy Language Partner."""
 
     custom_app_url = "http://0.0.0.0:7860/"
     dont_start_webserver = False
 
     def run(self, reachy_mini: ReachyMini, stop_event: threading.Event) -> None:
-        """Run the Reachy Mini conversation app."""
+        """Run Reachy Language Partner."""
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
