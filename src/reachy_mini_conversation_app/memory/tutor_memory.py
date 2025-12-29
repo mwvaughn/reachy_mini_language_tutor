@@ -41,7 +41,7 @@ class TutorMemory:
         """
         try:
             response = await self.client.search.execute(
-                q="Learning progress, preferences, and recent sessions",
+                q="Learner name, personal information, learning progress, preferences, and recent sessions",
             )
             return self._format_context(response.results[:limit] if response.results else [])
         except Exception as e:
@@ -53,7 +53,7 @@ class TutorMemory:
 
         Args:
             content: The content to store.
-            category: Category of the memory (conversation, progress, preference, struggle, success).
+            category: Category of the memory (conversation, progress, preference, struggle, success, personal).
 
         """
         try:

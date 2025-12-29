@@ -12,7 +12,7 @@ class RememberTool(Tool):
     name = "remember"
     description = (
         "Store an important fact about this learner for future sessions. "
-        "Use this to record progress, struggles, preferences, or successes "
+        "Use this to record progress, struggles, preferences, successes, or personal information "
         "so you can provide personalized tutoring next time."
     )
     parameters_schema: dict[str, Any] = {
@@ -22,15 +22,17 @@ class RememberTool(Tool):
                 "type": "string",
                 "description": (
                     "The fact to remember, e.g., 'Learner struggles with subjunctive', "
-                    "'Prefers topics about Mexican culture', 'Successfully used preterite vs imperfect today'"
+                    "'Prefers topics about Mexican culture', 'Successfully used preterite vs imperfect today', "
+                    "'Learner's name is Carlos', 'Lives in Austin', 'Planning trip to Mexico City'"
                 ),
             },
             "category": {
                 "type": "string",
-                "enum": ["progress", "preference", "struggle", "success"],
+                "enum": ["progress", "preference", "struggle", "success", "personal"],
                 "description": (
                     "Category of the memory: progress (general notes), preference (what they like), "
-                    "struggle (what's difficult), success (what they mastered)"
+                    "struggle (what's difficult), success (what they mastered), "
+                    "personal (identity, interests, background, goals)"
                 ),
             },
         },
