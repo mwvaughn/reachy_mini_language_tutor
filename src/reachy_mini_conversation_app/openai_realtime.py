@@ -215,6 +215,9 @@ class OpenaiRealtimeHandler(AsyncStreamHandler):
                     pass
                 finally:
                     self.connection = None
+                    # Reset proactive greeting flag on session restart
+                    # Allows greeting to be sent again if session reconnects
+                    self._proactive_greeting_sent = False
 
             # Ensure we have a client (start_up must have run once)
             if getattr(self, "client", None) is None:
@@ -316,6 +319,13 @@ The following is what you remember about this learner from previous sessions:
             async for event in self.connection:
                 logger.debug(f"OpenAI event: {event.type}")
 
+                # Log buffer management events for debugging
+                if event.type == "input_audio_buffer.cleared":
+                    logger.debug("Audio buffer cleared by server")
+
+                if event.type == "input_audio_buffer.committed":
+                    logger.debug("Audio buffer committed by server (VAD auto-commit)")
+
                 # Send proactive greeting when session is created
                 if event.type == "session.created" and not self._proactive_greeting_sent:
                     from reachy_mini_conversation_app.prompts import get_profile_proactive_mode
@@ -331,7 +341,18 @@ The following is what you remember about this learner from previous sessions:
                     if self.deps.head_wobbler is not None:
                         self.deps.head_wobbler.reset()
                     self.deps.movement_manager.set_listening(True)
-                    logger.debug("User speech started")
+
+                    # Enhanced logging to help diagnose false VAD triggers
+                    elapsed = asyncio.get_event_loop().time() - self.start_time
+                    logger.debug("User speech started (%.2fs after session start)", elapsed)
+
+                    # Warning if speech detected suspiciously early (possible false positive)
+                    if elapsed < 2.0 and not self._proactive_greeting_sent:
+                        logger.warning(
+                            "VAD triggered %.2fs after session start, before proactive greeting sent. "
+                            "Possible false positive from connection artifacts.",
+                            elapsed,
+                        )
 
                 if event.type == "input_audio_buffer.speech_stopped":
                     self.deps.movement_manager.set_listening(False)
@@ -513,8 +534,16 @@ The following is what you remember about this learner from previous sessions:
     async def _send_proactive_greeting(self) -> None:
         """Send a proactive greeting to initiate conversation.
 
-        This injects a user message that prompts the model to introduce itself
-        and start the conversation, then forces response generation.
+        This method implements a multi-layered defense against false VAD triggers:
+        1. Waits for connection to stabilize (200ms buffer)
+        2. Clears any accumulated audio buffer to prevent false VAD triggers
+        3. Injects system message and forces response generation
+
+        The delay and buffer clear are critical because:
+        - Audio frames start arriving immediately when stream connects
+        - VAD analyzes accumulated buffer, not just new audio
+        - Connection artifacts/noise can trigger false speech detection
+        - Without clearing, greeting gets interrupted by phantom "user speech"
 
         Used for tutor profiles where the robot should speak first.
         """
@@ -523,7 +552,26 @@ The following is what you remember about this learner from previous sessions:
             return
 
         try:
+            # DEFENSE 1: Let connection stabilize to avoid initial noise/artifacts
+            # This 200ms delay allows:
+            # - Audio devices to finish initialization
+            # - WebSocket connection to fully establish
+            # - Any connection artifacts to clear
+            logger.debug("Waiting 200ms for connection to stabilize before greeting")
+            await asyncio.sleep(0.2)
+
+            # DEFENSE 2: Clear accumulated audio buffer to prevent false VAD triggers
+            # Between session.created and now, receive() has been appending audio frames.
+            # VAD analyzes the entire buffer, so even 200ms of silence/noise can trigger
+            # false positives. Clearing ensures VAD only sees post-greeting audio.
+            logger.debug("Clearing input audio buffer before proactive greeting")
+            await self.connection.input_audio_buffer.clear()
+
+            # Brief pause to ensure clear completes before we inject the greeting
+            await asyncio.sleep(0.05)
+
             # Inject a user message that triggers the greeting
+            logger.debug("Creating conversation item for proactive greeting")
             await self.connection.conversation.item.create(
                 item={
                     "type": "message",
@@ -541,11 +589,14 @@ The following is what you remember about this learner from previous sessions:
             )
 
             # Force immediate response generation
+            logger.debug("Forcing response creation for proactive greeting")
             await self.connection.response.create(response={})
-            logger.info("Proactive greeting initiated")
+            logger.info("Proactive greeting initiated successfully (buffer cleared, response triggered)")
 
         except Exception as e:
+            # DEFENSE 3: Graceful degradation - log error but don't crash
             logger.error("Failed to send proactive greeting: %s", e)
+            logger.info("Continuing session - user can initiate conversation manually")
 
     # Microphone receive
     async def receive(self, frame: Tuple[int, NDArray[np.int16]]) -> None:
