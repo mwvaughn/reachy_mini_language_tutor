@@ -131,16 +131,10 @@ def run(
     stream_manager: gr.Blocks | LocalStream | None = None
 
     if args.gradio:
-        api_key_textbox = gr.Textbox(
-            label="OPENAI API Key",
-            type="password",
-            value=os.getenv("OPENAI_API_KEY") if not get_space() else "",
-        )
+        from reachy_mini_conversation_app.gradio_tutor_selector import TutorSelectorUI
 
-        from reachy_mini_conversation_app.gradio_personality import PersonalityUI
-
-        personality_ui = PersonalityUI()
-        personality_ui.create_components()
+        tutor_ui = TutorSelectorUI()
+        tutor_ui.create_components()
 
         stream = Stream(
             handler=handler,
@@ -148,8 +142,7 @@ def run(
             modality="audio",
             additional_inputs=[
                 chatbot,
-                api_key_textbox,
-                *personality_ui.additional_inputs_ordered(),
+                *tutor_ui.additional_inputs_ordered(),
             ],
             additional_outputs=[chatbot],
             additional_outputs_handler=update_chatbot,
@@ -161,7 +154,7 @@ def run(
         else:
             app = settings_app
 
-        personality_ui.wire_events(handler, stream_manager)
+        tutor_ui.wire_events(handler, stream_manager)
 
         app = gr.mount_gradio_app(app, stream.ui, path="/")
     else:

@@ -1,0 +1,26 @@
+{
+  "french_tutor": {
+    "display_name": "Delphine",
+    "language": "French",
+    "flag_emoji": "🇫🇷",
+    "short_description": "Practice conversational French with cultural insights",
+    "level": "Beginner-friendly",
+    "accent_color": "#FF6B9D"
+  },
+  "spanish_tutor": {
+    "display_name": "Sofia",
+    "language": "Mexican Spanish",
+    "flag_emoji": "🇲🇽",
+    "short_description": "Learn Spanish with Mexican cultural context",
+    "level": "Beginner-friendly",
+    "accent_color": "#FFB347"
+  },
+  "default": {
+    "display_name": "Language Partner",
+    "language": "Any Language",
+    "flag_emoji": "🌍",
+    "short_description": "Adaptive language practice for any language",
+    "level": "All levels",
+    "accent_color": "#4ECDC4"
+  }
+}
