@@ -15,6 +15,30 @@
     "level": "Beginner-friendly",
     "accent_color": "#FFB347"
   },
+  "german_tutor": {
+    "display_name": "Lukas",
+    "language": "German",
+    "flag_emoji": "🇩🇪",
+    "short_description": "Master German with systematic cultural guidance",
+    "level": "Beginner-friendly",
+    "accent_color": "#7B68EE"
+  },
+  "italian_tutor": {
+    "display_name": "Chiara",
+    "language": "Italian",
+    "flag_emoji": "🇮🇹",
+    "short_description": "Discover Italian through art, culture, and conversation",
+    "level": "Beginner-friendly",
+    "accent_color": "#50C878"
+  },
+  "portuguese_tutor": {
+    "display_name": "Rafael",
+    "language": "Brazilian Portuguese",
+    "flag_emoji": "🇧🇷",
+    "short_description": "Learn Brazilian Portuguese with warmth and rhythm",
+    "level": "Beginner-friendly",
+    "accent_color": "#FDB913"
+  },
   "default": {
     "display_name": "Language Partner",
     "language": "Any Language",
