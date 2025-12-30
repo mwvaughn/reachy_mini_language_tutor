@@ -210,6 +210,8 @@ HF_TOKEN=your_hf_token                                    # For Hugging Face mod
 LOCAL_VISION_MODEL=HuggingFaceTB/SmolVLM2-2.2B-Instruct  # Local vision model path
 ```
 
+**Persistent Memory**: `SUPERMEMORY_API_KEY` enables cross-session memory via [supermemory.ai](https://supermemory.ai). When configured, tutors remember learner names, skill levels, error patterns, and progress. Powers the `recall` and `remember` tools.
+
 ## Available LLM Tools
 
 | Tool | Action | Dependencies |

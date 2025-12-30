@@ -76,6 +76,8 @@ REACHY_MINI_CUSTOM_PROFILE=french_tutor  # Choose your language
 SUPERMEMORY_API_KEY=...                  # Optional, for persistent memory
 ```
 
+**Persistent Memory**: The `SUPERMEMORY_API_KEY` enables your tutor to remember you across sessions—your name, skill level, common mistakes, and learning progress. Get a free API key at [supermemory.ai](https://supermemory.ai).
+
 ### Start Practicing
 
 ```bash
