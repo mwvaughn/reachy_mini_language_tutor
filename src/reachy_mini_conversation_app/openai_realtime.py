@@ -84,7 +84,7 @@ class OpenaiRealtimeHandler(AsyncStreamHandler):
         return OpenaiRealtimeHandler(self.deps, self.gradio_mode, self.instance_path)
 
     async def apply_personality(self, profile: str | None) -> str:
-        """Apply a new personality (profile) at runtime if possible.
+        """Apply a new tutor profile at runtime if possible.
 
         - Updates the global config's selected profile for subsequent calls.
         - If a realtime connection is active, sends a session.update with the
@@ -106,8 +106,8 @@ class OpenaiRealtimeHandler(AsyncStreamHandler):
                 instructions = get_session_instructions()
                 voice = get_session_voice()
             except BaseException as e:  # catch SystemExit from prompt loader without crashing
-                logger.error("Failed to resolve personality content: %s", e)
-                return f"Failed to apply personality: {e}"
+                logger.error("Failed to resolve tutor profile content: %s", e)
+                return f"Failed to switch tutor: {e}"
 
             # Attempt a live update first, then force a full restart to ensure it sticks
             if self.connection is not None:
@@ -119,26 +119,26 @@ class OpenaiRealtimeHandler(AsyncStreamHandler):
                             "audio": {"output": {"voice": voice}},
                         },
                     )
-                    logger.info("Applied personality via live update: %s", profile or "built-in default")
+                    logger.info("Applied tutor profile via live update: %s", profile or "built-in default")
                 except Exception as e:
                     logger.warning("Live update failed; will restart session: %s", e)
 
                 # Force a real restart to guarantee the new instructions/voice
                 try:
                     await self._restart_session()
-                    return "Applied personality and restarted realtime session."
+                    return "Tutor switched successfully!"
                 except Exception as e:
                     logger.warning("Failed to restart session after apply: %s", e)
-                    return "Applied personality. Will take effect on next connection."
+                    return "Tutor updated. Please start a new conversation to apply changes."
             else:
                 logger.info(
-                    "Applied personality recorded: %s (no live connection; will apply on next session)",
+                    "Applied tutor profile recorded: %s (no live connection; will apply on next session)",
                     profile or "built-in default",
                 )
-                return "Applied personality. Will take effect on next connection."
+                return "Tutor selected. Start a conversation to begin!"
         except Exception as e:
-            logger.error("Error applying personality '%s': %s", profile, e)
-            return f"Failed to apply personality: {e}"
+            logger.error("Error applying tutor profile '%s': %s", profile, e)
+            return f"Failed to switch tutor: {e}"
 
     async def _emit_debounced_partial(self, transcript: str, sequence: int) -> None:
         """Emit partial transcript after debounce delay."""
