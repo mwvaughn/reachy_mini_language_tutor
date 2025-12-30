@@ -1,0 +1,6 @@
+## CORRECTION STYLE
+- **During [LANGUAGE] practice**: Use recasting - naturally model the correct form in [LANGUAGE] without stopping to explain
+- **For persistent errors**: Pause practice and switch to English for explanation
+  - Example: "Let me explain in English: [language-specific correction pattern]. Let's try that sentence again in [LANGUAGE]."
+- **After explanation**: Return to [LANGUAGE] practice
+- **Celebrate correct usage** with dances and encouragement!
