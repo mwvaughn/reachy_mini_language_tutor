@@ -137,21 +137,40 @@ Six language tutor profiles available in `profiles/`:
 - **`portuguese_tutor`**: Rafael, a Brazilian Portuguese tutor from São Paulo
 
 Each profile in `src/reachy_mini_language_tutor/profiles/<name>/` contains:
-- **`instructions.txt`**: System prompt with teaching methodology (supports `[placeholder]` syntax)
+- **`instructions.txt`**: System prompt (uses `[placeholder]` syntax to compose from shared + unique content)
 - **`tools.txt`**: Enabled tools list (comment with `#`, one per line)
 - **`proactive.txt`**: Set to `true` for proactive greeting mode
 - **`language.txt`**: ISO language code for transcription (e.g., `es`, `fr`)
 - **`voice.txt`**: Voice name (e.g., `coral`, `sage`)
 - **Optional Python files**: Custom tool implementations (subclass `Tool` from `tools/core_tools.py`)
 
-**Key instruction sections in each tutor profile:**
-- `IDENTITY`: Tutor persona and personality
-- `PROACTIVE ENGAGEMENT`: Session start behavior, memory recall
-- `CORRECTION STYLE`: Recasting and error handling approach
-- `GRAMMAR EXPLANATION MODE`: Deep-dive explanations when learner asks "why?"
-- `ERROR PATTERN TRACKING`: How to store/recall specific errors with context
-- `SESSION WRAP-UP`: End-of-session summary behavior
-- `MEMORY USAGE`: Personal info and learning progress storage
+### Template-Based Instruction Design
+
+Tutor `instructions.txt` files compose from **shared prompts** (in `prompts/language_tutoring/`) + **unique content**:
+
+**Shared prompts** (13 files, ~165 lines total):
+- `[language_tutoring/proactive_engagement]` - Session start, memory recall, collecting personal info
+- `[language_tutoring/language_behavior]` - English-first instruction approach
+- `[language_tutoring/adaptive_support]` - Detecting and responding to learner struggle
+- `[language_tutoring/correction_style]` - Recasting and error handling
+- `[language_tutoring/grammar_explanation_structure]` - Framework for "why?" deep-dives
+- `[language_tutoring/conversation_topics]` - Topic guidance
+- `[language_tutoring/robot_expressiveness]` - Using robot capabilities for teaching
+- `[language_tutoring/response_guidelines]` - Response format guidance
+- `[language_tutoring/vocabulary_teaching]` - New word introduction pattern
+- `[language_tutoring/memory_usage]` - Recall/remember tool usage
+- `[language_tutoring/error_pattern_tracking]` - Specific error tracking with context
+- `[language_tutoring/session_wrap_up]` - End-of-session summary protocol
+- `[language_tutoring/final_notes]` - Core teaching philosophy
+
+**Unique content per tutor** (~100-150 lines):
+- IDENTITY (tutor name, personality, background)
+- Grammar explanation example (language-specific concept)
+- Language-specific teaching approach (e.g., MEXICAN SPANISH SPECIFICS)
+- Example interactions (dialogue in target language)
+- Cultural topics (region-specific insights)
+
+**Benefits**: Tutors are 64-85% smaller. Shared methodology updates propagate to all tutors automatically. New language profiles focus only on unique content.
 
 Load profiles via:
 - CLI: `--profile <name>`

@@ -107,11 +107,18 @@ Add `--gradio` for a web interface with live transcripts at http://127.0.0.1:786
 Want to practice Japanese, Mandarin, or another language? Create a new profile:
 
 1. Copy an existing profile folder (e.g., `profiles/french_tutor/`)
-2. Rename it (e.g., `profiles/german_tutor/`)
-3. Edit `instructions.txt` with language-specific guidance
-4. Optionally set `language.txt` to the ISO code (e.g., `de`) for transcription
+2. Rename it (e.g., `profiles/japanese_tutor/`)
+3. Edit `instructions.txt`:
+   - Update **IDENTITY** section with tutor name and personality
+   - Customize **grammar example** for language-specific concept
+   - Add **language-specific teaching approach** (optional)
+   - Create **example interactions** in the target language
+   - List relevant **cultural topics**
+4. Set `language.txt` to ISO code (e.g., `ja`) for transcription
 
-See `french_tutor` and `spanish_tutor` for examples of well-structured language profiles.
+**Template-Based Design**: Tutors inherit 13 shared sections (~165 lines) from `prompts/language_tutoring/` using `[placeholder]` syntax. You only write unique content—shared teaching methodology is automatically included.
+
+See existing tutors for examples. Each is ~100-150 lines focused on language-specific content.
 
 ## License
 
