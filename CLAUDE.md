@@ -3,7 +3,17 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-Reachy Language Partner - a language learning companion for the Reachy Mini robot. Practice conversational skills in French, Spanish, German, Italian, Portuguese, and other languages through natural dialogue with an expressive robot partner. Features persistent memory across sessions, proactive engagement, and gentle correction through recasting. Powered by OpenAI's realtime API, vision processing, and choreographed motion.
+Reachy Language Partner - a language learning companion for the Reachy Mini robot. Practice conversational skills in French, Spanish, German, Italian, Portuguese, and other languages through natural dialogue with an expressive robot partner.
+
+**Key Features:**
+- Persistent memory across sessions (tracks progress, struggles, preferences)
+- Proactive engagement and gentle correction through recasting
+- Grammar deep-dive mode with complete explanations on demand
+- Error pattern tracking with proactive review at session start
+- Session summaries with highlights and next-steps recommendations
+- Expressive robot feedback (dances, emotions, celebrations)
+
+Powered by OpenAI's realtime API, vision processing, and choreographed motion.
 
 ## Important Resources
 
@@ -127,17 +137,61 @@ Six language tutor profiles available in `profiles/`:
 - **`portuguese_tutor`**: Rafael, a Brazilian Portuguese tutor from São Paulo
 
 Each profile in `src/reachy_mini_conversation_app/profiles/<name>/` contains:
-- **`instructions.txt`**: System prompt (supports `[placeholder]` syntax to pull from `prompts/`)
+- **`instructions.txt`**: System prompt with teaching methodology (supports `[placeholder]` syntax)
 - **`tools.txt`**: Enabled tools list (comment with `#`, one per line)
 - **`proactive.txt`**: Set to `true` for proactive greeting mode
 - **`language.txt`**: ISO language code for transcription (e.g., `es`, `fr`)
 - **`voice.txt`**: Voice name (e.g., `coral`, `sage`)
 - **Optional Python files**: Custom tool implementations (subclass `Tool` from `tools/core_tools.py`)
 
+**Key instruction sections in each tutor profile:**
+- `IDENTITY`: Tutor persona and personality
+- `PROACTIVE ENGAGEMENT`: Session start behavior, memory recall
+- `CORRECTION STYLE`: Recasting and error handling approach
+- `GRAMMAR EXPLANATION MODE`: Deep-dive explanations when learner asks "why?"
+- `ERROR PATTERN TRACKING`: How to store/recall specific errors with context
+- `SESSION WRAP-UP`: End-of-session summary behavior
+- `MEMORY USAGE`: Personal info and learning progress storage
+
 Load profiles via:
 - CLI: `--profile <name>`
 - Environment: `REACHY_MINI_CUSTOM_PROFILE=<name>` in `.env`
 - Gradio UI: Select and hot-reload instructions (tools require restart)
+
+## Enhanced Feedback System
+
+The tutors implement a multi-layered feedback approach designed for effective language learning:
+
+### Grammar Explanation Mode
+When learners ask "why?", "explain that", or show confusion, tutors:
+1. Pause practice entirely
+2. Switch to full English explanation mode
+3. Provide complete grammar lessons with rules, examples, and memory tricks
+4. Have learners practice the concept immediately
+5. Store the explanation in memory for future reference
+
+Each tutor includes language-specific examples:
+- **French**: Passé composé with être, DR MRS VANDERTRAMP mnemonic
+- **Spanish**: Ser vs estar distinction, preterite vs imperfect
+- **German**: Akkusativ case changes, "AKK-use" mnemonic for direct objects
+- **Italian**: Gender agreement with O/A/I/E ending patterns
+- **Portuguese**: Ser vs estar, gerund usage (Brazilian vs European)
+
+### Error Pattern Tracking
+Tutors store errors with specific context using the `remember` tool (category: `struggle`):
+- **Specificity**: "Confused 'ser' vs 'estar' describing emotions" not just "verb issues"
+- **Context**: "Used 'j'ai allé' instead of 'je suis allé' in past tense narrative"
+- **Frequency**: "Third time confusing gender of 'table'"
+
+At session start, tutors recall past struggles and incorporate review naturally.
+
+### Session Summaries
+When sessions end, tutors provide spoken recaps:
+1. Topics/vocabulary covered
+2. One highlight (something done well)
+3. One area to focus on next time
+4. Store summary in memory (category: `progress`)
+5. End with encouragement and celebratory dance
 
 ## Configuration (.env)
 

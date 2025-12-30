@@ -20,11 +20,16 @@ Practice conversational skills in French, Spanish, German, Italian, Portuguese, 
 
 ## Features
 
+### Core Experience
 - **Natural conversation practice** - Speak freely and get real-time responses adapted to your level
 - **Persistent memory** - The robot remembers your progress, struggles, and preferences across sessions
 - **Proactive engagement** - Your robot starts conversations and offers help when you're stuck
-- **Gentle correction** - Learn through natural "recasting" without breaking conversation flow
 - **Expressive feedback** - Dances and emotions celebrate your progress and keep practice fun
+
+### Enhanced Feedback System
+- **Grammar deep-dives** - Ask "why?" anytime and get complete grammar lessons with rules, examples, and memory tricks
+- **Error pattern tracking** - Your tutor remembers specific mistakes and proactively reviews them in future sessions
+- **Session summaries** - End each session with a spoken recap of topics covered, highlights, and areas to focus on next
 
 ## Language Profiles
 
@@ -88,11 +93,12 @@ Add `--gradio` for a web interface with live transcripts at http://127.0.0.1:786
 
 ## How It Works
 
-1. **Greet** - Your robot greets you in your target language and invites you to practice
+1. **Greet** - Your robot greets you by name (if returning) and reviews any past struggles
 2. **Converse** - Speak naturally; the robot adapts to your level automatically
-3. **Learn** - Mistakes are gently corrected through natural conversation
+3. **Learn** - Mistakes are gently corrected; ask "why?" for detailed grammar explanations
 4. **Celebrate** - The robot dances and shows emotions when you make progress
-5. **Remember** - Your progress is saved for the next session
+5. **Review** - End with a session summary highlighting what you learned
+6. **Remember** - Your progress, struggles, and breakthroughs are saved for next time
 
 ## Creating New Language Profiles
 
