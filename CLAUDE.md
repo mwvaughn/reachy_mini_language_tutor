@@ -48,13 +48,13 @@ pip install -e .[all_vision,dev]
 
 ### Running the App
 ```bash
-reachy-mini-conversation-app                           # Console mode (default)
-reachy-mini-conversation-app --gradio                  # Web UI at http://127.0.0.1:7860/
-reachy-mini-conversation-app --head-tracker mediapipe # With face tracking
-reachy-mini-conversation-app --local-vision            # Local SmolVLM2 vision
-reachy-mini-conversation-app --wireless-version        # For wireless robot
-reachy-mini-conversation-app --no-camera               # Audio-only mode
-reachy-mini-conversation-app --profile <name>          # Load custom profile
+reachy-mini-language-tutor                           # Console mode (default)
+reachy-mini-language-tutor --gradio                  # Web UI at http://127.0.0.1:7860/
+reachy-mini-language-tutor --head-tracker mediapipe # With face tracking
+reachy-mini-language-tutor --local-vision            # Local SmolVLM2 vision
+reachy-mini-language-tutor --wireless-version        # For wireless robot
+reachy-mini-language-tutor --no-camera               # Audio-only mode
+reachy-mini-language-tutor --profile <name>          # Load custom profile
 ```
 
 ### Development Workflow
@@ -136,7 +136,7 @@ Six language tutor profiles available in `profiles/`:
 - **`italian_tutor`**: Chiara, an Italian tutor from Florence with cultural insights
 - **`portuguese_tutor`**: Rafael, a Brazilian Portuguese tutor from São Paulo
 
-Each profile in `src/reachy_mini_conversation_app/profiles/<name>/` contains:
+Each profile in `src/reachy_mini_language_tutor/profiles/<name>/` contains:
 - **`instructions.txt`**: System prompt with teaching methodology (supports `[placeholder]` syntax)
 - **`tools.txt`**: Enabled tools list (comment with `#`, one per line)
 - **`proactive.txt`**: Set to `true` for proactive greeting mode
@@ -230,7 +230,7 @@ LOCAL_VISION_MODEL=HuggingFaceTB/SmolVLM2-2.2B-Instruct  # Local vision model pa
 - **Type checking**: Strict mypy enabled (`mypy src/`)
 - **Formatting**: Ruff with 119-char line length
 - **Docstrings**: Required for all public functions/classes (ruff `D` rules enabled)
-- **Import sorting**: `isort` via ruff (local-folder: `reachy_mini_conversation_app`)
+- **Import sorting**: `isort` via ruff (local-folder: `reachy_mini_language_tutor`)
 - **Quote style**: Double quotes
 - **Async patterns**: Use `asyncio` for OpenAI realtime API, threading for robot control
 
@@ -238,7 +238,7 @@ LOCAL_VISION_MODEL=HuggingFaceTB/SmolVLM2-2.2B-Instruct  # Local vision model pa
 
 ### Adding Custom Tools
 1. Create Python file in `profiles/<profile_name>/` (e.g., `my_tool.py`)
-2. Subclass `reachy_mini_conversation_app.tools.core_tools.Tool`
+2. Subclass `reachy_mini_language_tutor.tools.core_tools.Tool`
 3. Implement `name`, `description`, `parameters`, and `__call__()` method
 4. Add tool name to `profiles/<profile_name>/tools.txt`
 5. See `profiles/french_tutor/recall.py` and `profiles/french_tutor/remember.py` for examples

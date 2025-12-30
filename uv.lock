@@ -3933,7 +3933,19 @@ wheels = [
 ]
 
 [[package]]
-name = "reachy-mini-conversation-app"
+name = "reachy-mini-dances-library"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "reachy-mini" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5f/0e/7b26c96caf905e8e0cedff57251da4f953b1c2b97a611c86aee76318f5d1/reachy_mini_dances_library-0.2.1.tar.gz", hash = "sha256:f63fbb0e27f97c547f4e4487e8491495365b24c6f0d063780ef1da9fa5b1daf1", size = 14022 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e2/52/69d2d0434019e72811f77bfe408e6781a8bee10639e480d9d6ac1b745f81/reachy_mini_dances_library-0.2.1-py3-none-any.whl", hash = "sha256:b3b2028dd92648b70c262535e9b77aa481a0a3dcf6f2ceece84c08b725cbbddf", size = 16159 },
+]
+
+[[package]]
+name = "reachy-mini-language-tutor"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
@@ -4027,18 +4039,6 @@ dev = [
     { name = "pytest-asyncio" },
     { name = "ruff", specifier = "==0.12.0" },
     { name = "types-requests" },
-]
-
-[[package]]
-name = "reachy-mini-dances-library"
-version = "0.2.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "reachy-mini" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5f/0e/7b26c96caf905e8e0cedff57251da4f953b1c2b97a611c86aee76318f5d1/reachy_mini_dances_library-0.2.1.tar.gz", hash = "sha256:f63fbb0e27f97c547f4e4487e8491495365b24c6f0d063780ef1da9fa5b1daf1", size = 14022 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e2/52/69d2d0434019e72811f77bfe408e6781a8bee10639e480d9d6ac1b745f81/reachy_mini_dances_library-0.2.1-py3-none-any.whl", hash = "sha256:b3b2028dd92648b70c262535e9b77aa481a0a3dcf6f2ceece84c08b725cbbddf", size = 16159 },
 ]
 
 [[package]]

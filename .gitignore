@@ -58,4 +58,4 @@ cache/
 .nfs*
 
 # User-created personalities (managed by UI)
-src/reachy_mini_conversation_app/profiles/user_personalities/
+src/reachy_mini_language_tutor/profiles/user_personalities/

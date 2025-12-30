@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "reachy_mini_conversation_app"
+name = "reachy_mini_language_tutor"
 version = "0.1.0"
 authors = [{ name = "Pollen Robotics", email = "contact@pollen-robotics.com" }]
 description = "Language learning companion for Reachy Mini robot with real-time conversation and persistent memory"
@@ -59,10 +59,10 @@ dev = [
 ]
 
 [project.scripts]
-reachy-mini-conversation-app = "reachy_mini_conversation_app.main:main"
+reachy-mini-language-tutor = "reachy_mini_language_tutor.main:main"
 
 [project.entry-points."reachy_mini_apps"]
-reachy_mini_conversation_app = "reachy_mini_conversation_app.main:ReachyMiniConversationApp"
+reachy_mini_language_tutor = "reachy_mini_language_tutor.main:ReachyMiniConversationApp"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
@@ -72,7 +72,7 @@ include-package-data = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-reachy_mini_conversation_app = [
+reachy_mini_language_tutor = [
   "images/*",
   "static/*",
   ".env.example",
@@ -106,7 +106,7 @@ ignore = [
 length-sort = true
 lines-after-imports = 2
 no-lines-before = ["standard-library", "local-folder"]
-known-local-folder = ["reachy_mini_conversation_app"]
+known-local-folder = ["reachy_mini_language_tutor"]
 known-first-party = ["reachy_mini", "reachy_mini_dances_library", "reachy_mini_toolbox"]
 split-on-trailing-comma = true
 

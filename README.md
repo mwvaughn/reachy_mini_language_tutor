@@ -52,8 +52,8 @@ Practice conversational skills in French, Spanish, German, Italian, Portuguese, 
 ### Installation
 
 ```bash
-git clone https://github.com/pollen-robotics/reachy_mini_conversation_app.git
-cd reachy_mini_conversation_app
+git clone https://github.com/pollen-robotics/reachy_mini_language_tutor.git
+cd reachy_mini_language_tutor
 
 # Using uv (recommended)
 uv venv --python 3.12.1
@@ -80,13 +80,13 @@ SUPERMEMORY_API_KEY=...                  # Optional, for persistent memory
 
 ```bash
 # Practice French
-reachy-mini-conversation-app --profile french_tutor
+reachy-mini-language-tutor --profile french_tutor
 
 # Practice Spanish
-reachy-mini-conversation-app --profile spanish_tutor
+reachy-mini-language-tutor --profile spanish_tutor
 
 # Practice any language (robot will ask what you want to learn)
-reachy-mini-conversation-app
+reachy-mini-language-tutor
 ```
 
 Add `--gradio` for a web interface with live transcripts at http://127.0.0.1:7860/
