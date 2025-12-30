@@ -152,14 +152,14 @@ class TutorSelectorUI:
 
         """
         # Tutor card selection handler
-        async def _on_tutor_selected(evt: gr.SelectData) -> tuple[str, list]:
+        async def _on_tutor_selected(evt: gr.SelectData) -> str:
             """Handle tutor card selection and apply personality.
 
             Args:
                 evt: SelectData containing the selected card index.
 
             Returns:
-                Tuple of (status_message, chatbot_history).
+                Status message string.
 
             """
             try:
@@ -173,14 +173,10 @@ class TutorSelectorUI:
                 # Apply personality
                 status_msg = await handler.apply_personality(profile_name)
 
-                # Clear chatbot history on profile switch
-                return (
-                    f"✅ {status_msg}",
-                    [],  # Clear chat
-                )
+                return f"✅ {status_msg}"
             except Exception as e:
                 logger.error(f"Error applying tutor profile: {e}", exc_info=True)
-                return f"❌ Error switching tutor: {e}", []
+                return f"❌ Error switching tutor: {e}"
 
         # Wire the selection event within the Blocks context
         with blocks:
