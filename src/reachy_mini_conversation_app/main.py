@@ -139,7 +139,21 @@ def run(
             ],
             additional_outputs=[chatbot],
             additional_outputs_handler=update_chatbot,
-            ui_args={"title": ""},
+            ui_args={
+                "title": "",
+                "css": """
+                    /* Make stream panel less prominent */
+                    .gradio-container > .main > .wrap > .panel:first-child {
+                        max-width: 300px;
+                        min-width: 250px;
+                        flex-shrink: 2;
+                    }
+                    /* Give more space to main content area */
+                    .gradio-container > .main > .wrap > .panel:not(:first-child) {
+                        flex-grow: 3;
+                    }
+                """,
+            },
         )
         stream_manager = stream.ui
         if not settings_app:
