@@ -104,21 +104,6 @@ class TutorSelectorUI:
 
     def create_components(self) -> None:
         """Instantiate Gradio components for the tutor selector UI."""
-        # Determine if API key accordion should be open by default
-        api_key_missing = not config.OPENAI_API_KEY
-
-        # API key configuration (collapsible accordion)
-        with gr.Accordion("Advanced Settings", open=api_key_missing):
-            self.api_key_textbox = gr.Textbox(
-                label="OpenAI API Key",
-                type="password",
-                value=os.getenv("OPENAI_API_KEY", ""),
-                placeholder="sk-...",
-                info="Required for conversation. Your key is stored securely.",
-            )
-            if api_key_missing:
-                gr.Markdown("⚠️ **API key required.** Enter your OpenAI API key above to begin.")
-
         # Tutor selection cards
         self.tutor_cards = gr.Dataset(
             components=[gr.HTML()],
@@ -126,6 +111,16 @@ class TutorSelectorUI:
             label="Choose Your Language Partner",
             samples_per_page=3,
             type="index",
+        )
+
+        # API key configuration
+        # Note: Accordion needs to be created within Blocks context, so we'll add it in wire_events
+        self.api_key_textbox = gr.Textbox(
+            label="OpenAI API Key (Advanced Settings)",
+            type="password",
+            value=os.getenv("OPENAI_API_KEY", ""),
+            placeholder="sk-...",
+            info="Required for conversation. Your key is stored securely.",
         )
 
         # Status messages
