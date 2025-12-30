@@ -28,6 +28,7 @@ class TutorSelectorUI:
         self._metadata_path = Path(__file__).parent / "profile_metadata.json"
 
         # Components (initialized in create_components)
+        self.title_display: gr.HTML
         self.tutor_cards: gr.Dataset
         self.api_key_textbox: gr.Textbox
         self.status_md: gr.Markdown
@@ -39,6 +40,12 @@ class TutorSelectorUI:
             for profile_id, data in self.tutor_metadata.items()
         ]
 
+        # Track current selection (find default profile index)
+        self.selected_index = next(
+            (i for i, p in enumerate(self.tutor_profiles) if p["id"] == "default"),
+            0
+        )
+
     def _load_metadata(self) -> dict[str, Any]:
         """Load tutor metadata from JSON file.
 
@@ -49,7 +56,8 @@ class TutorSelectorUI:
         """
         try:
             with open(self._metadata_path, encoding="utf-8") as f:
-                return json.load(f)
+                data: dict[str, Any] = json.load(f)
+                return data
         except (FileNotFoundError, json.JSONDecodeError) as e:
             logger.warning(f"Could not load tutor metadata: {e}, using defaults")
             # Fallback: minimal defaults
@@ -80,18 +88,50 @@ class TutorSelectorUI:
                 },
             }
 
-    def _render_tutor_card(self, profile: dict[str, Any]) -> str:
+    def _render_tutor_card(self, profile: dict[str, Any], is_selected: bool = False) -> str:
         """Generate HTML for a tutor card.
 
         Args:
             profile: Dictionary with tutor metadata (display_name, language, etc.)
+            is_selected: Whether this card is currently selected.
 
         Returns:
             HTML string for the tutor card.
 
         """
+        selected_styles = ""
+        checkmark = ""
+        if is_selected:
+            selected_styles = f"""
+                background: linear-gradient(135deg, {profile['accent_color']}10 0%, {profile['accent_color']}20 100%);
+                border-left: 6px solid {profile['accent_color']};
+                box-shadow: 0 4px 16px {profile['accent_color']}40;
+                transform: scale(1.02);
+            """
+            checkmark = f"""
+                <div style="
+                    position: absolute;
+                    top: 12px;
+                    right: 12px;
+                    background: {profile['accent_color']};
+                    color: white;
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1rem;
+                    font-weight: bold;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                ">✓</div>
+            """
+        else:
+            selected_styles = f"border-left: 4px solid {profile['accent_color']};"
+
         return f"""
-        <div class="tutor-card" style="border-left: 4px solid {profile['accent_color']};">
+        <div class="tutor-card" style="{selected_styles} position: relative;">
+            {checkmark}
             <div class="tutor-header">
                 <span class="tutor-flag">{profile['flag_emoji']}</span>
                 <h3 class="tutor-name">{profile['display_name']}</h3>
@@ -102,12 +142,61 @@ class TutorSelectorUI:
         </div>
         """
 
+    def _render_title(self, profile: dict[str, Any]) -> str:
+        """Generate HTML for the dynamic title showing current tutor.
+
+        Args:
+            profile: Dictionary with current tutor metadata.
+
+        Returns:
+            HTML string for the title.
+
+        """
+        return f"""
+        <h1 style="
+            font-family: 'Outfit', system-ui, sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, {profile['accent_color']} 0%, {profile['accent_color']}99 50%, {profile['accent_color']}66 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            padding: 16px 0;
+            text-align: center;
+        ">
+            {profile['flag_emoji']} {profile['display_name']}
+        </h1>
+        """
+
+    def _render_all_cards(self) -> list[list[str]]:
+        """Render all tutor cards with current selection state.
+
+        Returns:
+            List of card HTML samples for gr.Dataset.
+
+        """
+        return [
+            [self._render_tutor_card(profile, is_selected=(i == self.selected_index))]
+            for i, profile in enumerate(self.tutor_profiles)
+        ]
+
     def create_components(self) -> None:
         """Instantiate Gradio components for the tutor selector UI."""
-        # Tutor selection cards
+        # Get current profile
+        current_profile = self.tutor_profiles[self.selected_index]
+
+        # Dynamic title showing current tutor
+        self.title_display = gr.HTML(
+            value=self._render_title(current_profile),
+            label="",
+        )
+
+        # Tutor selection cards with selection highlighting
         self.tutor_cards = gr.Dataset(
             components=[gr.HTML()],
-            samples=[[self._render_tutor_card(profile)] for profile in self.tutor_profiles],
+            samples=self._render_all_cards(),
             label="Choose Your Language Partner",
             samples_per_page=3,
             type="index",
@@ -134,8 +223,9 @@ class TutorSelectorUI:
 
         """
         return [
-            self.api_key_textbox,
+            self.title_display,
             self.tutor_cards,
+            self.api_key_textbox,
             self.status_md,
         ]
 
@@ -152,19 +242,20 @@ class TutorSelectorUI:
 
         """
         # Tutor card selection handler
-        async def _on_tutor_selected(evt: gr.SelectData) -> str:
+        async def _on_tutor_selected(evt: gr.SelectData) -> tuple[str, gr.Dataset, str]:
             """Handle tutor card selection and apply personality.
 
             Args:
                 evt: SelectData containing the selected card index.
 
             Returns:
-                Status message string.
+                Tuple of (title_html, updated_cards, status_message).
 
             """
             try:
-                selected_index = evt.index
-                selected_profile = self.tutor_profiles[selected_index]
+                # Update selected index
+                self.selected_index = evt.index
+                selected_profile = self.tutor_profiles[self.selected_index]
                 profile_id = selected_profile["id"]
 
                 # Convert profile ID to handler format (None for default)
@@ -173,15 +264,21 @@ class TutorSelectorUI:
                 # Apply personality
                 status_msg = await handler.apply_personality(profile_name)
 
-                return f"✅ {status_msg}"
+                # Re-render title and cards with new selection
+                new_title = self._render_title(selected_profile)
+                updated_cards = gr.Dataset(samples=self._render_all_cards())
+
+                return new_title, updated_cards, f"✅ {status_msg}"
             except Exception as e:
                 logger.error(f"Error applying tutor profile: {e}", exc_info=True)
-                return f"❌ Error switching tutor: {e}"
+                # Keep current state on error
+                current_profile = self.tutor_profiles[self.selected_index]
+                return self._render_title(current_profile), gr.Dataset(samples=self._render_all_cards()), f"❌ Error switching tutor: {e}"
 
         # Wire the selection event within the Blocks context
         with blocks:
             self.tutor_cards.select(
                 fn=_on_tutor_selected,
                 inputs=[],
-                outputs=[self.status_md],
+                outputs=[self.title_display, self.tutor_cards, self.status_md],
             )

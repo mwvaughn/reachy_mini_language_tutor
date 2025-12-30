@@ -114,17 +114,10 @@ def run(
         head_wobbler=head_wobbler,
         memory_manager=memory_manager,
     )
-    current_file_path = os.path.dirname(os.path.abspath(__file__))
-    logger.debug(f"Current file absolute path: {current_file_path}")
     chatbot = gr.Chatbot(
         type="messages",
         resizable=True,
-        avatar_images=(
-            os.path.join(current_file_path, "images", "user_avatar.png"),
-            os.path.join(current_file_path, "images", "reachymini_avatar.png"),
-        ),
     )
-    logger.debug(f"Chatbot avatar images: {chatbot.avatar_images}")
 
     handler = OpenaiRealtimeHandler(deps, gradio_mode=args.gradio, instance_path=instance_path)
 
@@ -146,7 +139,7 @@ def run(
             ],
             additional_outputs=[chatbot],
             additional_outputs_handler=update_chatbot,
-            ui_args={"title": "Reachy Language Partner"},
+            ui_args={"title": ""},
         )
         stream_manager = stream.ui
         if not settings_app:
