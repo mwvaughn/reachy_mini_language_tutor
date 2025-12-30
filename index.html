@@ -1,125 +1,1240 @@
-<!doctype html>
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Reachy Language Partner</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reachy Language Partner – Your Expressive Robot Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Base colors */
+            --bg-deep: #0a0e1a;
+            --bg-navy: #0f1420;
+            --bg-card: rgba(20, 28, 45, 0.6);
+
+            /* Vibrant accents */
+            --coral: #ff6b6b;
+            --coral-bright: #ff8787;
+            --turquoise: #4ecdc4;
+            --cyan: #45b7d1;
+            --lime: #55efc4;
+            --lime-soft: #96ceb4;
+            --yellow: #ffeaa7;
+            --gold: #fdcb6e;
+            --purple: #a29bfe;
+            --pink: #fd79a8;
+
+            /* Text */
+            --text-primary: #f0f4ff;
+            --text-secondary: #b8c5db;
+            --text-muted: #6b7b95;
+
+            /* Effects */
+            --glow: 0 0 30px rgba(78, 205, 196, 0.3);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-strong: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255, 107, 107, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(78, 205, 196, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(85, 239, 196, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 90% 70%, rgba(253, 203, 110, 0.06) 0%, transparent 50%);
+            animation: gradientShift 20s ease infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(5%, 5%) rotate(90deg); }
+            50% { transform: translate(-5%, 5%) rotate(180deg); }
+            75% { transform: translate(5%, -5%) rotate(270deg); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Navigation */
+        nav {
+            padding: 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--coral) 0%, var(--turquoise) 50%, var(--lime) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--turquoise);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0 120px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.15), rgba(85, 239, 196, 0.15));
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--lime);
+            margin-bottom: 32px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(48px, 7vw, 84px);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 28px;
+            letter-spacing: -2px;
+            animation: fadeInUp 0.8s ease 0.2s backwards;
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--coral-bright) 0%, var(--turquoise) 40%, var(--lime) 80%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientFlow 8s ease infinite, fadeInUp 0.8s ease 0.2s backwards;
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(18px, 2.5vw, 24px);
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+            animation: fadeInUp 0.8s ease 0.4s backwards;
+        }
+
+        .language-badges {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+            animation: fadeInUp 0.8s ease 0.6s backwards;
+        }
+
+        .lang-badge {
+            padding: 12px 24px;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .lang-badge:nth-child(1) { border-color: rgba(255, 107, 107, 0.4); color: var(--coral-bright); }
+        .lang-badge:nth-child(2) { border-color: rgba(253, 203, 110, 0.4); color: var(--gold); }
+        .lang-badge:nth-child(3) { border-color: rgba(162, 155, 254, 0.4); color: var(--purple); }
+        .lang-badge:nth-child(4) { border-color: rgba(85, 239, 196, 0.4); color: var(--lime); }
+        .lang-badge:nth-child(5) { border-color: rgba(78, 205, 196, 0.4); color: var(--turquoise); }
+
+        .lang-badge:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 80px;
+            animation: fadeInUp 0.8s ease 0.8s backwards;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 36px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 100px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--coral) 0%, var(--coral-bright) 100%);
+            color: white;
+            box-shadow: 0 10px 40px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 50px rgba(255, 107, 107, 0.6);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            color: var(--text-primary);
+            border: 2px solid rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--turquoise);
+            transform: translateY(-4px);
+            box-shadow: var(--glow);
+        }
+
+        .hero-visual {
+            margin: 0 auto;
+            max-width: 600px;
+            animation: fadeInUp 0.8s ease 1s backwards;
+        }
+
+        .robot-card {
+            position: relative;
+            padding: 24px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            box-shadow: var(--shadow-strong);
+            overflow: hidden;
+        }
+
+        .robot-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                transparent 30%,
+                rgba(78, 205, 196, 0.1) 40%,
+                rgba(255, 107, 107, 0.1) 50%,
+                transparent 60%);
+            animation: shimmer 6s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .robot-card img {
+            width: 100%;
+            border-radius: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .robot-caption {
+            margin-top: 16px;
+            font-size: 15px;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Section Headers */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 8px 18px;
+            background: linear-gradient(135deg, rgba(162, 155, 254, 0.2), rgba(253, 121, 168, 0.2));
+            border: 2px solid rgba(162, 155, 254, 0.3);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--purple);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 900;
+            margin-bottom: 20px;
+            letter-spacing: -1.5px;
+        }
+
+        .section-header p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Bento Grid Features */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            padding: 32px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .feature-card.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--coral), var(--turquoise), var(--lime));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(78, 205, 196, 0.3);
+            box-shadow: var(--shadow-strong), var(--glow);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .feature-card:nth-child(1) .feature-icon { background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 135, 135, 0.3)); }
+        .feature-card:nth-child(2) .feature-icon { background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(69, 183, 209, 0.3)); }
+        .feature-card:nth-child(3) .feature-icon { background: linear-gradient(135deg, rgba(85, 239, 196, 0.2), rgba(150, 206, 180, 0.3)); }
+        .feature-card:nth-child(4) .feature-icon { background: linear-gradient(135deg, rgba(253, 203, 110, 0.2), rgba(255, 234, 167, 0.3)); }
+        .feature-card:nth-child(5) .feature-icon { background: linear-gradient(135deg, rgba(162, 155, 254, 0.2), rgba(179, 173, 255, 0.3)); }
+        .feature-card:nth-child(6) .feature-icon { background: linear-gradient(135deg, rgba(253, 121, 168, 0.2), rgba(255, 140, 184, 0.3)); }
+        .feature-card:nth-child(7) .feature-icon { background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(78, 205, 196, 0.3)); }
+        .feature-card:nth-child(8) .feature-icon { background: linear-gradient(135deg, rgba(85, 239, 196, 0.2), rgba(253, 203, 110, 0.3)); }
+
+        .feature-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Large featured cards */
+        .feature-card.large {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 900px) {
+            .feature-card.large {
+                grid-column: span 1;
+            }
+        }
+
+        /* Getting Started Section */
+        .install-section {
+            background: linear-gradient(135deg, rgba(20, 28, 45, 0.8), rgba(15, 20, 32, 0.9));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(78, 205, 196, 0.2);
+            border-radius: 32px;
+            padding: 56px;
+            margin: 80px 0;
+            box-shadow: var(--shadow-strong);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .install-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--coral), var(--turquoise), var(--lime), var(--gold));
+        }
+
+        .install-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .install-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 900;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--turquoise), var(--lime));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .install-steps {
+            display: grid;
+            gap: 32px;
+        }
+
+        .install-step {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        .install-step.animate {
+            animation: slideInLeft 0.6s ease forwards;
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--coral), var(--coral-bright));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 900;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .step-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .step-content {
+            margin-left: 64px;
+        }
+
+        .step-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        .code-block {
+            position: relative;
+            background: rgba(10, 14, 26, 0.8);
+            border: 2px solid rgba(78, 205, 196, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--lime);
+            display: block;
+            white-space: pre;
+        }
+
+        .code-block .comment {
+            color: var(--text-muted);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 8px 16px;
+            background: rgba(78, 205, 196, 0.2);
+            border: 1px solid rgba(78, 205, 196, 0.4);
+            border-radius: 8px;
+            color: var(--turquoise);
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(78, 205, 196, 0.3);
+            border-color: var(--turquoise);
+        }
+
+        .copy-btn.copied {
+            background: rgba(85, 239, 196, 0.3);
+            border-color: var(--lime);
+            color: var(--lime);
+        }
+
+        /* Tutors Grid */
+        .tutors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .tutor-card {
+            padding: 32px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .tutor-card.animate {
+            animation: popIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes popIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .tutor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .tutor-card:hover::before {
+            opacity: 1;
+        }
+
+        .tutor-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            border-color: rgba(78, 205, 196, 0.4);
+            box-shadow: var(--shadow-strong), var(--glow);
+        }
+
+        .tutor-flag {
+            font-size: 56px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .tutor-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .tutor-lang {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tutor-desc {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* How It Works Flow */
+        .flow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        .flow-step {
+            text-align: center;
+            padding: 32px 24px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .flow-step.animate {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .flow-step::after {
+            content: '→';
+            position: absolute;
+            right: -24px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 32px;
+            color: var(--turquoise);
+            opacity: 0.3;
+        }
+
+        .flow-step:last-child::after {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .flow-step::after {
+                content: '↓';
+                right: 50%;
+                top: auto;
+                bottom: -28px;
+                transform: translateX(50%);
+            }
+        }
+
+        .flow-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .flow-step h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .flow-step p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            padding: 80px 0 40px;
+            border-top: 2px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--coral) 0%, var(--turquoise) 50%, var(--lime) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 24px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--turquoise);
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-text a {
+            color: var(--turquoise);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-text a:hover {
+            color: var(--lime);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .hero {
+                padding: 40px 0 80px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .section {
+                padding: 60px 0;
+            }
+
+            .install-section {
+                padding: 32px 24px;
+            }
+
+            .step-content {
+                margin-left: 0;
+                margin-top: 16px;
+            }
+
+            .code-block {
+                padding: 16px;
+            }
+
+            .copy-btn {
+                position: static;
+                display: block;
+                width: 100%;
+                margin-top: 12px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-	<header class="hero">
-		<div class="topline">
-			<div class="brand">
-				<span class="logo">🗣️</span>
-				<span class="brand-name">Reachy Mini</span>
-			</div>
-			<div class="pill">Language practice · Persistent memory · Expressive robot partner</div>
-		</div>
-		<div class="hero-grid">
-			<div class="hero-copy">
-				<p class="eyebrow">Language Partner</p>
-				<h1>Practice languages with an expressive robot companion.</h1>
-				<p class="lede">
-					A friendly language learning companion for Reachy Mini. Practice French, Spanish, or any language through natural conversation with a patient, encouraging robot that remembers your progress across sessions.
-				</p>
-				<div class="hero-actions">
-					<a class="btn primary" href="#highlights">Explore features</a>
-					<a class="btn ghost" href="#story">See how it works</a>
-				</div>
-				<div class="hero-badges">
-					<span>Natural conversation practice</span>
-					<span>Persistent memory across sessions</span>
-					<span>Gentle correction via recasting</span>
-					<span>Proactive engagement when stuck</span>
-				</div>
-			</div>
-			<div class="hero-visual">
-				<div class="glass-card">
-					<img src="docs/assets/reachy_mini_dance.gif" alt="Reachy Mini dancing" class="hero-gif">
-					<p class="caption">Reachy Mini celebrates your progress with dances and expressions while helping you practice.</p>
-				</div>
-			</div>
-		</div>
-	</header>
+    <div class="container">
+        <!-- Navigation -->
+        <nav>
+            <div class="logo">🗣️ Reachy Language Partner</div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#install">Get Started</a>
+                <a href="#tutors">Tutors</a>
+                <a href="https://github.com/pollen-robotics/reachy_mini_language_tutor" target="_blank">GitHub</a>
+            </div>
+        </nav>
 
-	<section id="highlights" class="section features">
-		<div class="section-header">
-			<p class="eyebrow">What's inside</p>
-			<h2>Your personal language practice companion</h2>
-			<p class="intro">
-				The app combines natural conversation, adaptive difficulty, and expressive motion to make language practice engaging and memorable.
-			</p>
-		</div>
-		<div class="feature-grid">
-			<div class="feature-card">
-				<span class="icon">🗣️</span>
-				<h3>Natural conversation</h3>
-				<p>Practice speaking naturally with an encouraging partner who adapts to your level and helps when you're stuck.</p>
-			</div>
-			<div class="feature-card">
-				<span class="icon">🧠</span>
-				<h3>Persistent memory</h3>
-				<p>Your robot remembers your progress, struggles, and preferences across sessions for personalized practice.</p>
-			</div>
-			<div class="feature-card">
-				<span class="icon">✨</span>
-				<h3>Gentle correction</h3>
-				<p>Learn through natural "recasting" - hear correct forms modeled in context without breaking conversation flow.</p>
-			</div>
-			<div class="feature-card">
-				<span class="icon">💃</span>
-				<h3>Expressive celebration</h3>
-				<p>Your robot dances and shows emotions to celebrate your progress and keep practice sessions fun.</p>
-			</div>
-			<div class="feature-card">
-				<span class="icon">🌍</span>
-				<h3>Multiple languages</h3>
-				<p>Choose from French, Spanish, or configure the default profile to practice any language you want.</p>
-			</div>
-		</div>
-	</section>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-badge">
+                ✨ Powered by OpenAI Realtime API
+            </div>
 
-	<section id="story" class="section story">
-		<div class="story-grid">
-			<div class="story-card">
-				<p class="eyebrow">How it works</p>
-				<h3>From bonjour to fluency</h3>
-				<ul class="story-list">
-					<li><span>👋</span> Your robot greets you in your target language and invites you to start practicing.</li>
-					<li><span>🎯</span> Speak at your level - the robot adapts difficulty based on your responses.</li>
-					<li><span>💡</span> When stuck, get helpful prompts and sentence starters to keep the conversation flowing.</li>
-					<li><span>🎉</span> Celebrate breakthroughs with dances and expressions that make learning memorable.</li>
-				</ul>
-			</div>
-			<div class="story-card secondary">
-				<p class="eyebrow">Where it shines</p>
-				<h3>Perfect for conversational practice</h3>
-				<p class="story-text">
-					Whether you're a beginner looking for patient practice or an intermediate learner wanting to build fluency, Reachy Mini provides a judgment-free space to practice speaking. The robot's expressive nature makes practice sessions feel less like studying and more like chatting with a friend.
-				</p>
-				<div class="chips">
-					<span class="chip">French tutor</span>
-					<span class="chip">Spanish tutor</span>
-					<span class="chip">Adaptive difficulty</span>
-					<span class="chip">Cultural context</span>
-					<span class="chip">Memory tools</span>
-				</div>
-			</div>
-		</div>
-	</section>
+            <h1>
+                Practice Languages with Your<br>
+                <span class="gradient-text">Expressive Robot Companion</span>
+            </h1>
 
-	<footer class="footer">
-		<p>
-			Reachy Language Partner by <a href="https://github.com/pollen-robotics" target="_blank" rel="noopener">Pollen Robotics</a>.
-			Explore more apps on <a href="https://huggingface.co/spaces/pollen-robotics/Reachy_Mini_Apps" target="_blank" rel="noopener">Hugging Face Spaces</a>.
-		</p>
-	</footer>
+            <p class="hero-subtitle">
+                Natural conversation practice in 5 languages with an encouraging robot that remembers your progress, celebrates your successes, and helps when you're stuck.
+            </p>
 
+            <div class="language-badges">
+                <div class="lang-badge">🇫🇷 Français</div>
+                <div class="lang-badge">🇪🇸 Español</div>
+                <div class="lang-badge">🇩🇪 Deutsch</div>
+                <div class="lang-badge">🇮🇹 Italiano</div>
+                <div class="lang-badge">🇧🇷 Português</div>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="#install" class="btn btn-primary">
+                    Install on Your Reachy
+                    <span>→</span>
+                </a>
+                <a href="#features" class="btn btn-secondary">
+                    Explore Features
+                    <span>↓</span>
+                </a>
+            </div>
+
+            <div class="hero-visual">
+                <div class="robot-card">
+                    <img src="docs/assets/reachy_mini_dance.gif" alt="Reachy Mini dancing and celebrating">
+                    <p class="robot-caption">✨ Your robot celebrates your progress with dances and expressive motions</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="section">
+            <div class="section-header">
+                <span class="section-tag">What's Inside</span>
+                <h2>Your Personal Language Lab</h2>
+                <p>Combine natural conversation, adaptive difficulty, and expressive feedback for memorable practice sessions.</p>
+            </div>
+
+            <div class="bento-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🗣️</div>
+                    <h3>Natural Conversation</h3>
+                    <p>Practice speaking naturally with an encouraging partner who adapts to your level in real-time.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Persistent Memory</h3>
+                    <p>Your robot remembers your name, progress, common mistakes, and preferences across sessions.</p>
+                </div>
+
+                <div class="feature-card large">
+                    <div class="feature-icon">📚</div>
+                    <h3>Grammar Deep-Dives</h3>
+                    <p>Ask "why?" anytime and get complete grammar explanations with rules, examples, and memory tricks. Never wonder about conjugations or cases again.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Error Pattern Tracking</h3>
+                    <p>Your tutor remembers specific mistakes and proactively reviews them in future sessions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>Session Summaries</h3>
+                    <p>End each session with a spoken recap of topics covered and areas to focus on next time.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💃</div>
+                    <h3>Expressive Feedback</h3>
+                    <p>Dances, emotions, and celebrations make learning fun and keep you motivated.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>5 Language Tutors</h3>
+                    <p>Choose from French, Spanish, German, Italian, or Portuguese with unique tutor personalities.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Easy Tutor Creation</h3>
+                    <p>Template-based system makes it simple to add new languages or customize existing tutors.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Getting Started Section -->
+        <section id="install" class="install-section">
+            <div class="install-header">
+                <h2>Get Started in Minutes</h2>
+                <p style="color: var(--text-secondary); font-size: 18px;">Install on your Reachy Mini and start practicing your favorite language</p>
+            </div>
+
+            <div class="install-steps">
+                <div class="install-step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3>Prerequisites</h3>
+                    </div>
+                    <div class="step-content">
+                        <p>Make sure you have these ready:</p>
+                        <ul style="color: var(--text-secondary); margin-left: 20px; line-height: 1.8;">
+                            <li><strong>Reachy Mini SDK</strong> installed and running</li>
+                            <li><strong>OpenAI API key</strong> (<a href="https://platform.openai.com/api-keys" target="_blank" style="color: var(--turquoise);">Get one here</a>)</li>
+                            <li><strong>SuperMemory API key</strong> for persistent memory (<a href="https://supermemory.ai" target="_blank" style="color: var(--turquoise);">Optional - Free tier available</a>)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="install-step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3>Installation</h3>
+                    </div>
+                    <div class="step-content">
+                        <p>Clone and install the app using uv (recommended):</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this, 0)">Copy</button>
+<code>git clone https://github.com/pollen-robotics/reachy_mini_language_tutor.git
+cd reachy_mini_language_tutor
+uv venv --python 3.12.1
+source .venv/bin/activate
+uv sync</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="install-step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3>Configuration</h3>
+                    </div>
+                    <div class="step-content">
+                        <p>Copy <code style="background: rgba(78, 205, 196, 0.2); padding: 2px 6px; border-radius: 4px; color: var(--lime);">.env.example</code> to <code style="background: rgba(78, 205, 196, 0.2); padding: 2px 6px; border-radius: 4px; color: var(--lime);">.env</code> and add your keys:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this, 1)">Copy</button>
+<code>OPENAI_API_KEY=sk-...
+REACHY_MINI_CUSTOM_PROFILE=french_tutor  <span class="comment"># Choose: french_tutor, spanish_tutor, german_tutor, italian_tutor, portuguese_tutor</span>
+SUPERMEMORY_API_KEY=...  <span class="comment"># Optional - enables memory across sessions</span></code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="install-step">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <h3>Start Practicing!</h3>
+                    </div>
+                    <div class="step-content">
+                        <p>Launch your chosen language tutor:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this, 2)">Copy</button>
+<code><span class="comment"># Practice French</span>
+reachy-mini-language-tutor --profile french_tutor
+
+<span class="comment"># Or launch with web interface at http://127.0.0.1:7860/</span>
+reachy-mini-language-tutor --profile spanish_tutor --gradio</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Language Tutors Section -->
+        <section id="tutors" class="section">
+            <div class="section-header">
+                <span class="section-tag">Meet Your Tutors</span>
+                <h2>5 Unique Personalities</h2>
+                <p>Each tutor brings cultural context, regional expressions, and a distinct teaching style.</p>
+            </div>
+
+            <div class="tutors-grid">
+                <div class="tutor-card">
+                    <span class="tutor-flag">🇫🇷</span>
+                    <h3>Delphine</h3>
+                    <p class="tutor-lang">French</p>
+                    <p class="tutor-desc">Charming and encouraging conversation partner from Paris with cultural insights into French life.</p>
+                </div>
+
+                <div class="tutor-card">
+                    <span class="tutor-flag">🇪🇸</span>
+                    <h3>Sofia</h3>
+                    <p class="tutor-lang">Mexican Spanish</p>
+                    <p class="tutor-desc">Warm and enthusiastic partner teaching Mexican Spanish with regional expressions and cultural context.</p>
+                </div>
+
+                <div class="tutor-card">
+                    <span class="tutor-flag">🇩🇪</span>
+                    <h3>Lukas</h3>
+                    <p class="tutor-lang">German (Hochdeutsch)</p>
+                    <p class="tutor-desc">Patient and structured tutor from Munich teaching Standard German with precision and warmth.</p>
+                </div>
+
+                <div class="tutor-card">
+                    <span class="tutor-flag">🇮🇹</span>
+                    <h3>Chiara</h3>
+                    <p class="tutor-lang">Italian</p>
+                    <p class="tutor-desc">Enthusiastic and expressive partner from Florence sharing Italian language and cultural heritage.</p>
+                </div>
+
+                <div class="tutor-card">
+                    <span class="tutor-flag">🇧🇷</span>
+                    <h3>Rafael</h3>
+                    <p class="tutor-lang">Brazilian Portuguese</p>
+                    <p class="tutor-desc">Relaxed and friendly partner from São Paulo teaching Brazilian Portuguese with local flair.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-tag">The Journey</span>
+                <h2>How It Works</h2>
+                <p>A simple, natural flow that makes language practice feel like conversation with a friend.</p>
+            </div>
+
+            <div class="flow-grid">
+                <div class="flow-step">
+                    <span class="flow-icon">👋</span>
+                    <h4>Greet</h4>
+                    <p>Your robot greets you by name and reviews past progress</p>
+                </div>
+
+                <div class="flow-step">
+                    <span class="flow-icon">💬</span>
+                    <h4>Converse</h4>
+                    <p>Speak naturally at your level with adaptive difficulty</p>
+                </div>
+
+                <div class="flow-step">
+                    <span class="flow-icon">📖</span>
+                    <h4>Learn</h4>
+                    <p>Get gentle corrections and deep grammar explanations</p>
+                </div>
+
+                <div class="flow-step">
+                    <span class="flow-icon">🎉</span>
+                    <h4>Celebrate</h4>
+                    <p>Robot dances and shows emotions for your progress</p>
+                </div>
+
+                <div class="flow-step">
+                    <span class="flow-icon">📝</span>
+                    <h4>Review</h4>
+                    <p>End with spoken summary of what you learned</p>
+                </div>
+
+                <div class="flow-step">
+                    <span class="flow-icon">💾</span>
+                    <h4>Remember</h4>
+                    <p>Progress and struggles saved for next session</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">🗣️ Reachy Language Partner</div>
+
+                <div class="footer-links">
+                    <a href="https://github.com/pollen-robotics/reachy_mini_language_tutor" target="_blank">GitHub</a>
+                    <a href="https://github.com/pollen-robotics" target="_blank">Pollen Robotics</a>
+                    <a href="https://huggingface.co/spaces/pollen-robotics/Reachy_Mini_Apps" target="_blank">HuggingFace Spaces</a>
+                </div>
+
+                <p class="footer-text">
+                    Reachy Language Partner by <a href="https://github.com/pollen-robotics" target="_blank">Pollen Robotics</a><br>
+                    Licensed under Apache 2.0 • Open Source
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('animate');
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animatable elements
+        document.querySelectorAll('.feature-card, .install-step, .tutor-card, .flow-step').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Copy code functionality
+        function copyCode(button, index) {
+            const codeBlocks = document.querySelectorAll('.code-block code');
+            const code = codeBlocks[index].textContent;
+
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
-
 </html>
