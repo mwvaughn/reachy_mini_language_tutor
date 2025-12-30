@@ -14,7 +14,7 @@ tags:
 
 # Reachy Language Partner
 
-Practice conversational skills in French, Spanish, or any language through natural dialogue with an expressive robot companion. Your robot partner remembers your progress across sessions, celebrates your successes with dances and expressions, and helps when you get stuck.
+Practice conversational skills in French, Spanish, German, Italian, Portuguese, or any language through natural dialogue with an expressive robot companion. Your robot partner remembers your progress across sessions, celebrates your successes with dances and expressions, and helps when you get stuck.
 
 ![Reachy Mini Dance](docs/assets/reachy_mini_dance.gif)
 
@@ -33,6 +33,9 @@ Practice conversational skills in French, Spanish, or any language through natur
 | `default` | Generic language partner that adapts to any language |
 | `french_tutor` | Delphine, a French conversation partner with cultural context |
 | `spanish_tutor` | Sofia, a Mexican Spanish conversation partner |
+| `german_tutor` | Lukas, a German tutor teaching Standard German (Hochdeutsch) |
+| `italian_tutor` | Chiara, an Italian tutor from Florence with cultural insights |
+| `portuguese_tutor` | Rafael, a Brazilian Portuguese tutor from São Paulo |
 
 ## Quick Start
 
@@ -93,7 +96,7 @@ Add `--gradio` for a web interface with live transcripts at http://127.0.0.1:786
 
 ## Creating New Language Profiles
 
-Want to practice German, Japanese, or another language? Create a new profile:
+Want to practice Japanese, Mandarin, or another language? Create a new profile:
 
 1. Copy an existing profile folder (e.g., `profiles/french_tutor/`)
 2. Rename it (e.g., `profiles/german_tutor/`)

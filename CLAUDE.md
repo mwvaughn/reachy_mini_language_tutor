@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-Reachy Language Partner - a language learning companion for the Reachy Mini robot. Practice conversational skills in French, Spanish, and other languages through natural dialogue with an expressive robot partner. Features persistent memory across sessions, proactive engagement, and gentle correction through recasting. Powered by OpenAI's realtime API, vision processing, and choreographed motion.
+Reachy Language Partner - a language learning companion for the Reachy Mini robot. Practice conversational skills in French, Spanish, German, Italian, Portuguese, and other languages through natural dialogue with an expressive robot partner. Features persistent memory across sessions, proactive engagement, and gentle correction through recasting. Powered by OpenAI's realtime API, vision processing, and choreographed motion.
 
 ## Important Resources
 
@@ -118,10 +118,13 @@ User audio → OpenaiRealtimeHandler (24kHz mono WebRTC)
 
 ## Language Profile System
 
-Three language tutor profiles available in `profiles/`:
+Six language tutor profiles available in `profiles/`:
 - **`default`**: Generic language partner that adapts to any language
 - **`french_tutor`**: Delphine, a French conversation partner with cultural context
 - **`spanish_tutor`**: Sofia, a Mexican Spanish conversation partner
+- **`german_tutor`**: Lukas, a German tutor teaching Standard German (Hochdeutsch)
+- **`italian_tutor`**: Chiara, an Italian tutor from Florence with cultural insights
+- **`portuguese_tutor`**: Rafael, a Brazilian Portuguese tutor from São Paulo
 
 Each profile in `src/reachy_mini_conversation_app/profiles/<name>/` contains:
 - **`instructions.txt`**: System prompt (supports `[placeholder]` syntax to pull from `prompts/`)
