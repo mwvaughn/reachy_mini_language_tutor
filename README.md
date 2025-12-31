@@ -4,8 +4,9 @@ emoji: 🗣️
 colorFrom: red
 colorTo: blue
 sdk: static
+app_file: index.html
 pinned: false
-short_description: Practice languages with Reachy Mini!
+short_description: Friendly Robot Companion
 tags:
  - reachy_mini
  - reachy_mini_python_app
