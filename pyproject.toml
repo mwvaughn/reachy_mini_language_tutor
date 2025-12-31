@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "reachy_mini_language_tutor"
 version = "0.1.0"
-authors = [{ name = "Pollen Robotics", email = "contact@pollen-robotics.com" }]
+authors = [{ name = "Matt Vaughn", email = "mattdotvaughn@icloud.com" }]
 description = "Language learning companion for Reachy Mini robot with real-time conversation and persistent memory"
 readme = "README.md"
 requires-python = ">=3.10"
