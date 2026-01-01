@@ -200,6 +200,103 @@ class LocalStream:
         except Exception as e:
             logger.warning("Failed to persist REACHY_MINI_CUSTOM_PROFILE: %s", e)
 
+    def _persist_supermemory_key(self, key: str) -> None:
+        """Persist SuperMemory API key to .env (no validation - optional feature)."""
+        k = (key or "").strip()
+        # Update live process env and config so consumers see it immediately
+        try:
+            os.environ["SUPERMEMORY_API_KEY"] = k
+        except Exception:  # best-effort
+            pass
+        try:
+            config.SUPERMEMORY_API_KEY = k
+        except Exception:
+            pass
+
+        if not self._instance_path:
+            return
+        try:
+            inst = Path(self._instance_path)
+            env_path = inst / ".env"
+            lines = self._read_env_lines(env_path)
+            replaced = False
+            for i, ln in enumerate(lines):
+                if ln.strip().startswith("SUPERMEMORY_API_KEY="):
+                    lines[i] = f"SUPERMEMORY_API_KEY={k}"
+                    replaced = True
+                    break
+            if not replaced:
+                lines.append(f"SUPERMEMORY_API_KEY={k}")
+            final_text = "\n".join(lines) + "\n"
+            env_path.write_text(final_text, encoding="utf-8")
+            logger.info("Persisted SUPERMEMORY_API_KEY to %s", env_path)
+
+            # Load the newly written .env into this process
+            try:
+                from dotenv import load_dotenv
+
+                load_dotenv(dotenv_path=str(env_path), override=True)
+            except Exception:
+                pass
+        except Exception as e:
+            logger.warning("Failed to persist SUPERMEMORY_API_KEY: %s", e)
+
+    def _persist_idle_settings(self, enable: bool, timeout: int) -> None:
+        """Persist idle signal settings to .env."""
+        # Update config immediately (applies to current session)
+        try:
+            config.ENABLE_IDLE_SIGNALS = enable
+            config.IDLE_SIGNAL_TIMEOUT = timeout
+        except Exception:
+            pass
+
+        # Update process env as well
+        try:
+            os.environ["ENABLE_IDLE_SIGNALS"] = str(enable).lower()
+            os.environ["IDLE_SIGNAL_TIMEOUT"] = str(timeout)
+        except Exception:
+            pass
+
+        if not self._instance_path:
+            return
+        try:
+            env_path = Path(self._instance_path) / ".env"
+            lines = self._read_env_lines(env_path)
+
+            # Update ENABLE_IDLE_SIGNALS
+            enable_replaced = False
+            for i, ln in enumerate(lines):
+                if ln.strip().startswith("ENABLE_IDLE_SIGNALS="):
+                    lines[i] = f"ENABLE_IDLE_SIGNALS={str(enable).lower()}"
+                    enable_replaced = True
+                    break
+            if not enable_replaced:
+                lines.append(f"ENABLE_IDLE_SIGNALS={str(enable).lower()}")
+
+            # Update IDLE_SIGNAL_TIMEOUT
+            timeout_replaced = False
+            for i, ln in enumerate(lines):
+                if ln.strip().startswith("IDLE_SIGNAL_TIMEOUT="):
+                    lines[i] = f"IDLE_SIGNAL_TIMEOUT={timeout}"
+                    timeout_replaced = True
+                    break
+            if not timeout_replaced:
+                lines.append(f"IDLE_SIGNAL_TIMEOUT={timeout}")
+
+            final_text = "\n".join(lines) + "\n"
+            env_path.write_text(final_text, encoding="utf-8")
+            logger.info("Persisted idle settings to %s (enable=%s, timeout=%d)", env_path, enable, timeout)
+
+            # Load the newly written .env into this process
+            try:
+                from dotenv import load_dotenv
+
+                load_dotenv(dotenv_path=str(env_path), override=True)
+            except Exception:
+                pass
+        except Exception as e:
+            logger.warning("Failed to persist idle settings: %s", e)
+
     def _read_persisted_personality(self) -> Optional[str]:
         """Read persisted startup personality from instance .env (if any)."""
         if not self._instance_path:
@@ -239,6 +336,13 @@ class LocalStream:
 
         class ApiKeyPayload(BaseModel):
             openai_api_key: str
+
+        class SupermemoryKeyPayload(BaseModel):
+            supermemory_api_key: str
+
+        class IdleSettingsPayload(BaseModel):
+            enable_idle_signals: bool
+            idle_signal_timeout: int  # Range: 30-900 seconds
 
         # GET / -> index.html
         @self._settings_app.get("/")
@@ -300,6 +404,49 @@ class LocalStream:
             except Exception as e:
                 logger.warning(f"API key validation failed: {e}")
                 return JSONResponse({"valid": False, "error": "validation_error"}, status_code=500)
+
+        # GET /supermemory_api_key/status -> check if SuperMemory key is configured
+        @self._settings_app.get("/supermemory_api_key/status")
+        def _supermemory_status() -> JSONResponse:
+            has_key = bool(config.SUPERMEMORY_API_KEY and str(config.SUPERMEMORY_API_KEY).strip())
+            return JSONResponse({"has_key": has_key})
+
+        # POST /supermemory_api_key -> set/persist SuperMemory key (no validation - optional feature)
+        @self._settings_app.post("/supermemory_api_key")
+        def _set_supermemory_key(payload: SupermemoryKeyPayload) -> JSONResponse:
+            key = (payload.supermemory_api_key or "").strip()
+            self._persist_supermemory_key(key)
+            return JSONResponse({"ok": True})
+
+        # GET /settings/idle -> get current idle signal configuration
+        @self._settings_app.get("/settings/idle")
+        def _get_idle_settings() -> JSONResponse:
+            return JSONResponse({
+                "enable_idle_signals": config.ENABLE_IDLE_SIGNALS,
+                "idle_signal_timeout": config.IDLE_SIGNAL_TIMEOUT
+            })
+
+        # POST /settings/idle -> update and persist idle signal settings
+        @self._settings_app.post("/settings/idle")
+        def _update_idle_settings(payload: IdleSettingsPayload) -> JSONResponse:
+            timeout = payload.idle_signal_timeout
+            enable = payload.enable_idle_signals
+
+            # Validate timeout range
+            if not (30 <= timeout <= 900):
+                return JSONResponse(
+                    {"ok": False, "error": "timeout_out_of_range", "min": 30, "max": 900},
+                    status_code=400
+                )
+
+            # Update config immediately (applies to current session)
+            config.ENABLE_IDLE_SIGNALS = enable
+            config.IDLE_SIGNAL_TIMEOUT = timeout
+
+            # Persist to .env for next restart
+            self._persist_idle_settings(enable, timeout)
+
+            return JSONResponse({"ok": True, "enable_idle_signals": enable, "idle_signal_timeout": timeout})
 
         self._settings_initialized = True
 
