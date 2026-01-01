@@ -21,9 +21,9 @@ class RememberTool(Tool):
             "fact": {
                 "type": "string",
                 "description": (
-                    "The fact to remember, e.g., 'Learner struggles with subjunctive', "
-                    "'Prefers topics about Mexican culture', 'Successfully used preterite vs imperfect today', "
-                    "'Learner's name is Carlos', 'Lives in Austin', 'Planning trip to Mexico City'"
+                    "The fact to remember, e.g., 'Learner struggles with verb conjugation', "
+                    "'Prefers topics about travel and culture', 'Successfully used past tense today', "
+                    "'Learner's name is Alex', 'Lives in Boston', 'Works as an engineer'"
                 ),
             },
             "category": {
