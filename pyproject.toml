@@ -62,7 +62,7 @@ dev = [
 reachy-mini-language-tutor = "reachy_mini_language_tutor.main:main"
 
 [project.entry-points."reachy_mini_apps"]
-reachy_mini_language_tutor = "reachy_mini_language_tutor.main:ReachyMiniConversationApp"
+reachy_mini_language_tutor = "reachy_mini_language_tutor.main:ReachyMiniLanguageTutor"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

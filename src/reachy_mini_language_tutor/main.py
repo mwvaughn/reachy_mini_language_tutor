@@ -217,7 +217,7 @@ def run(
         logger.info("Shutdown complete.")
 
 
-class ReachyMiniConversationApp(ReachyMiniApp):  # type: ignore[misc]
+class ReachyMiniLanguageTutor(ReachyMiniApp):  # type: ignore[misc]
     """Reachy Mini Apps entry point for Reachy Language Partner."""
 
     custom_app_url = "http://0.0.0.0:7860/"
@@ -248,7 +248,7 @@ class ReachyMiniConversationApp(ReachyMiniApp):  # type: ignore[misc]
 
 
 if __name__ == "__main__":
-    app = ReachyMiniConversationApp()
+    app = ReachyMiniLanguageTutor()
     try:
         app.wrapped_run()
     except KeyboardInterrupt:
