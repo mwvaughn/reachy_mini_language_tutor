@@ -65,11 +65,11 @@ reachy-mini-language-tutor = "reachy_mini_language_tutor.main:main"
 reachy_mini_language_tutor = "reachy_mini_language_tutor.main:ReachyMiniLanguageTutor"
 
 [tool.setuptools]
-package-dir = { "" = "src" }
 include-package-data = true
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
+include = ["reachy_mini_language_tutor*"]
 
 [tool.setuptools.package-data]
 reachy_mini_language_tutor = [
@@ -118,7 +118,7 @@ line-ending = "auto"
 
 [tool.mypy]
 python_version = "3.12"
-files = ["src/"]
+files = ["reachy_mini_language_tutor/"]
 ignore_missing_imports = true
 strict = true
 show_error_codes = true

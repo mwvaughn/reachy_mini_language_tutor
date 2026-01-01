@@ -137,7 +137,7 @@ def run(
             ],
             additional_outputs=[chatbot],
             additional_outputs_handler=update_chatbot,
-            ui_args={
+            ui_args={  # type: ignore[arg-type]
                 "title": "",
                 "css": """
                     /* Make stream panel less prominent */

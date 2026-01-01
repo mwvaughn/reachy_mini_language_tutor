@@ -1,6 +1,5 @@
 """Tests for prompt placeholder expansion in language tutor profiles."""
 
-from pathlib import Path
 
 import pytest
 
