@@ -1,16 +1,14 @@
 ---
 title: Reachy Language Partner
-emoji: 🗣️
+emoji: 🌍
 colorFrom: red
 colorTo: blue
 sdk: static
-app_file: index.html
 pinned: false
-short_description: Friendly Robot Companion
+short_description: Practice languages with Reachy Mini!
 tags:
  - reachy_mini
  - reachy_mini_python_app
- - language_learning
 ---
 
 # Reachy Language Partner
@@ -53,7 +51,7 @@ Practice conversational skills in French, Spanish, German, Italian, Portuguese, 
 ### Installation
 
 ```bash
-git clone https://github.com/pollen-robotics/reachy_mini_language_tutor.git
+git clone https://github.com/mwvaughn/reachy_mini_language_tutor.git
 cd reachy_mini_language_tutor
 
 # Using uv (recommended)
