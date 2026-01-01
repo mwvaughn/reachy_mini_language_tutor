@@ -443,7 +443,13 @@ class LocalStream:
             self._robot.media.backend == MediaBackend.DEFAULT
             or self._robot.media.backend == MediaBackend.DEFAULT_NO_VIDEO
         ):
-            self._robot.media.audio.clear_output_buffer()
+            if hasattr(self._robot.media.audio, "clear_output_buffer"):
+                self._robot.media.audio.clear_output_buffer()
+            else:
+                logger.warning(
+                    "clear_output_buffer() not available on this SDK version, "
+                    "only clearing handler output queue"
+                )
         self.handler.output_queue = asyncio.Queue()
 
     async def record_loop(self) -> None:
