@@ -15,6 +15,20 @@ Reachy Language Partner - a language learning companion for the Reachy Mini robo
 
 Powered by OpenAI's realtime API, vision processing, and choreographed motion.
 
+## Recent Improvements
+
+**Privacy Protections (Jan 2026)**: Added comprehensive privacy guidelines to persistent memory system. Memory now implements moderate privacy level with clear allowed/excluded data categories.
+
+**Normalized Language Tutor Profiles (Jan 2026)**: All language tutors now follow consistent English-first instruction approach. Cultural content is properly framed within the teaching methodology rather than being a primary focus.
+
+**Shared Memory Tools (Jan 2026)**: Moved `recall` and `remember` tools from profile-specific implementations to shared `tools/` directory, eliminating 455 lines of duplicate code and fixing "unknown tool" errors for default profile.
+
+**Source Code Migration (Dec 2025)**: Migrated source code from `src/reachy_mini_language_tutor/` to root-level `reachy_mini_language_tutor/` directory for cleaner project structure.
+
+**SDK Compatibility Check (Jan 2026)**: Added defensive version checking for SDK methods (e.g., `clear_output_buffer()`), preventing crashes when using different SDK versions.
+
+**Template-Based Tutor Design (Dec 2025)**: Extracted 13 shared prompt components (~165 lines) into reusable templates, reducing tutor file sizes by 64-85% and ensuring consistent methodology across all language tutors.
+
 ## Important Resources
 
 **ALWAYS consult the Reachy Mini Python SDK documentation for canonical information about robot implementation and design:**
@@ -58,12 +72,14 @@ reachy-mini-language-tutor --profile <name>          # Load custom profile
 ```
 
 ### Development Workflow
+**IMPORTANT: Always use `uv run` to execute development tools to ensure they run in the correct virtual environment.**
+
 ```bash
-ruff check .      # Lint and format check
-ruff format .     # Auto-format code
-mypy src/         # Type checking (strict mode enabled)
-pytest            # Run test suite
-pytest tests/test_openai_realtime.py  # Run specific test file
+uv run ruff check .      # Lint and format check
+uv run ruff format .     # Auto-format code
+uv run mypy reachy_mini_language_tutor/  # Type checking (strict mode enabled)
+uv run pytest            # Run test suite
+uv run pytest tests/test_openai_realtime.py  # Run specific test file
 ```
 
 ## Architecture
@@ -136,7 +152,7 @@ Six language tutor profiles available in `profiles/`:
 - **`italian_tutor`**: Chiara, an Italian tutor from Florence with cultural insights
 - **`portuguese_tutor`**: Rafael, a Brazilian Portuguese tutor from São Paulo
 
-Each profile in `src/reachy_mini_language_tutor/profiles/<name>/` contains:
+Each profile in `reachy_mini_language_tutor/profiles/<name>/` contains:
 - **`instructions.txt`**: System prompt (uses `[placeholder]` syntax to compose from shared + unique content)
 - **`tools.txt`**: Enabled tools list (comment with `#`, one per line)
 - **`proactive.txt`**: Set to `true` for proactive greeting mode
@@ -231,7 +247,14 @@ LOCAL_VISION_MODEL=HuggingFaceTB/SmolVLM2-2.2B-Instruct  # Local vision model pa
 
 **Persistent Memory**: `SUPERMEMORY_API_KEY` enables cross-session memory via [supermemory.ai](https://supermemory.ai). When configured, tutors remember learner names, skill levels, error patterns, and progress. Powers the `recall` and `remember` tools.
 
+**Privacy Protections**: The memory system implements moderate privacy guidelines:
+- **ALLOWED**: First names, general region, occupation category, interests, learning data
+- **EXCLUDED**: Age, specific location, family names, sensitive details, travel dates
+- Implicit consent model via `SUPERMEMORY_API_KEY` configuration
+
 ## Available LLM Tools
+
+**Note**: The `recall` and `remember` tools are now in the shared `tools/` directory (as of recent refactor), making them available to all profiles without duplication.
 
 | Tool | Action | Dependencies |
 |------|--------|--------------|
@@ -248,21 +271,22 @@ LOCAL_VISION_MODEL=HuggingFaceTB/SmolVLM2-2.2B-Instruct  # Local vision model pa
 
 ## Code Style Conventions
 
-- **Type checking**: Strict mypy enabled (`mypy src/`)
-- **Formatting**: Ruff with 119-char line length
+- **Type checking**: Strict mypy enabled (`uv run mypy reachy_mini_language_tutor/`)
+- **Formatting**: Ruff with 119-char line length (`uv run ruff format .`)
 - **Docstrings**: Required for all public functions/classes (ruff `D` rules enabled)
 - **Import sorting**: `isort` via ruff (local-folder: `reachy_mini_language_tutor`)
 - **Quote style**: Double quotes
 - **Async patterns**: Use `asyncio` for OpenAI realtime API, threading for robot control
+- **Tool execution**: Always use `uv run` for ruff, mypy, pytest, and other dev tools
 
 ## Development Tips
 
 ### Adding Custom Tools
-1. Create Python file in `profiles/<profile_name>/` (e.g., `my_tool.py`)
+1. Create Python file in `profiles/<profile_name>/` (e.g., `my_tool.py`) for profile-specific tools, or in `tools/` for shared tools
 2. Subclass `reachy_mini_language_tutor.tools.core_tools.Tool`
 3. Implement `name`, `description`, `parameters`, and `__call__()` method
 4. Add tool name to `profiles/<profile_name>/tools.txt`
-5. See `profiles/french_tutor/recall.py` and `profiles/french_tutor/remember.py` for examples
+5. See `tools/recall.py` and `tools/remember.py` for examples of shared tools available to all profiles
 
 ### Motion Control Principles
 - **100Hz loop is sacred** - never block the `MovementManager` thread
@@ -331,7 +355,8 @@ LOCAL_VISION_MODEL=HuggingFaceTB/SmolVLM2-2.2B-Instruct  # Local vision model pa
 - Tests located in `tests/`
 - Key test: `test_openai_realtime.py` (AsyncStreamHandler tests)
 - Audio fixtures available in `conftest.py`
-- Run with `pytest` after `uv sync --group dev`
+- Run with `uv run pytest` after `uv sync --group dev`
+- Always use `uv run pytest` to ensure tests run in the correct environment
 
 ## Dependencies & Extras
 
