@@ -186,8 +186,11 @@ async function init() {
   const changeOpenaiBtn = document.getElementById("change-openai-btn");
   const openaiStatus = document.getElementById("openai-status");
 
+  const supermemoryInputForm = document.getElementById("supermemory-input-form");
+  const supermemoryConfigured = document.getElementById("supermemory-configured");
   const supermemoryInput = document.getElementById("supermemory-key");
   const saveSupermemoryBtn = document.getElementById("save-supermemory-btn");
+  const changeSupermemoryBtn = document.getElementById("change-supermemory-btn");
   const supermemoryStatus = document.getElementById("supermemory-status");
 
   const personalityPanel = document.getElementById("personality-panel");
@@ -223,11 +226,16 @@ async function init() {
     // Load SuperMemory status (non-blocking)
     getSupermemoryStatus().then(smStatus => {
       if (smStatus.has_key) {
-        supermemoryStatus.textContent = "Key configured";
-        supermemoryStatus.className = "status-message status-success";
+        show(supermemoryInputForm, false);
+        show(supermemoryConfigured, true);
+      } else {
+        show(supermemoryInputForm, true);
+        show(supermemoryConfigured, false);
       }
     }).catch(() => {
-      // Silently fail - optional feature
+      // Silently fail - optional feature, default to input form
+      show(supermemoryInputForm, true);
+      show(supermemoryConfigured, false);
     });
   } else {
     // No key - show input form
@@ -283,7 +291,18 @@ async function init() {
     }
   });
 
-  // SuperMemory key handler
+  // SuperMemory key handlers
+  changeSupermemoryBtn.addEventListener("click", () => {
+    show(supermemoryConfigured, false);
+    show(supermemoryInputForm, true);
+    supermemoryInput.value = "";
+    supermemoryStatus.textContent = "";
+  });
+
+  supermemoryInput.addEventListener("input", () => {
+    supermemoryInput.classList.remove("error");
+  });
+
   saveSupermemoryBtn.addEventListener("click", async () => {
     const key = supermemoryInput.value.trim();
     supermemoryStatus.textContent = "Saving...";
@@ -292,17 +311,16 @@ async function init() {
     try {
       await saveSupermemoryKey(key);
       if (key) {
-        supermemoryStatus.textContent = "Key saved successfully";
+        supermemoryStatus.textContent = "Key saved successfully. Reloading...";
         supermemoryStatus.className = "status-message status-success";
+        // Reload to show configured state
+        setTimeout(() => window.location.reload(), 500);
       } else {
         supermemoryStatus.textContent = "Key removed (feature disabled)";
         supermemoryStatus.className = "status-message status-info";
+        // Reload to show input form state
+        setTimeout(() => window.location.reload(), 500);
       }
-
-      // Auto-dismiss after 3 seconds
-      setTimeout(() => {
-        supermemoryStatus.textContent = "";
-      }, 3000);
     } catch (e) {
       supermemoryStatus.textContent = "Failed to save key";
       supermemoryStatus.className = "status-message status-error";

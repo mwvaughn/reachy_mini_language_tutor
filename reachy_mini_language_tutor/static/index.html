@@ -68,7 +68,9 @@
         <!-- SuperMemory Key (Optional) -->
         <div class="setting-group setting-optional">
           <div class="setting-divider"></div>
-          <div class="setting-row">
+
+          <!-- Input Form (when key is missing) -->
+          <div id="supermemory-input-form" class="setting-row hidden">
             <div class="setting-info">
               <label for="supermemory-key">
                 SuperMemory API Key
@@ -87,6 +89,23 @@
                 </button>
               </div>
               <div id="supermemory-status" class="status-message"></div>
+            </div>
+          </div>
+
+          <!-- Configured State (when key exists) -->
+          <div id="supermemory-configured" class="setting-row setting-configured hidden">
+            <div class="setting-info">
+              <label>
+                SuperMemory API Key
+                <span class="badge badge-optional">Optional</span>
+              </label>
+              <p class="hint">Persistent memory is enabled for personalized learning</p>
+            </div>
+            <div class="setting-control">
+              <div class="status-badge status-success">
+                <span class="badge-text">Connected</span>
+              </div>
+              <button id="change-supermemory-btn" class="btn-ghost">Change key</button>
             </div>
           </div>
         </div>
