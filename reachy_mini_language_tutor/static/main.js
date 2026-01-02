@@ -210,6 +210,10 @@ async function init() {
   const saveAdvancedBtn = document.getElementById("save-advanced");
   const advancedStatus = document.getElementById("advanced-status");
 
+  const gettingStartedPanel = document.getElementById("getting-started-panel");
+  const gettingStartedToggle = document.getElementById("getting-started-toggle");
+  const gettingStartedContent = document.getElementById("getting-started-content");
+
   show(loading, true);
   show(apiPanel, false);
   show(personalityPanel, false);
@@ -244,6 +248,7 @@ async function init() {
   }
 
   show(apiPanel, true);
+  show(gettingStartedPanel, true);
 
   // OpenAI key handlers
   changeOpenaiBtn.addEventListener("click", () => {
@@ -424,6 +429,14 @@ async function init() {
         advancedStatus.className = "status-message status-warning";
       }
     }
+  });
+
+  // Getting Started panel toggle
+  gettingStartedToggle.addEventListener("click", () => {
+    const isExpanded = gettingStartedToggle.getAttribute("aria-expanded") === "true";
+    gettingStartedToggle.setAttribute("aria-expanded", !isExpanded);
+    gettingStartedPanel.classList.toggle("panel-expanded");
+    gettingStartedContent.classList.toggle("panel-collapsed");
   });
 
   // Idle timeout slider display update

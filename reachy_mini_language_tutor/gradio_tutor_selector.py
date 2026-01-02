@@ -27,6 +27,7 @@ class TutorSelectorUI:
 
         # Components (initialized in create_components)
         self.title_display: gr.HTML
+        self.getting_started_accordion: gr.Accordion
         self.tutor_cards: gr.Dataset
         self.api_key_textbox: gr.Textbox
         self.status_md: gr.Markdown
@@ -185,6 +186,28 @@ class TutorSelectorUI:
             label="",
         )
 
+        # Getting Started accordion
+        self.getting_started_accordion = gr.Accordion(label="🚀 Getting Started", open=False)
+        with self.getting_started_accordion:
+            gr.Markdown("""### Quick Start Guide
+
+**Step 1: Choose Your Tutor**
+Select a language tutor from the cards below. Each tutor specializes in their native language and culture.
+
+**Step 2: Configure API Key**
+Enter your OpenAI API key below (starts with `sk-`). This is required for voice conversation.
+Don't have one? [Get a key from OpenAI](https://platform.openai.com/api-keys)
+
+**Step 3: Start Talking**
+Click the microphone button and start speaking! Your tutor will respond with voice and movement.
+
+**Conversation Tips:**
+- Speak naturally at a normal pace
+- Ask for grammar explanations when you're unsure
+- Request cultural context to deepen your understanding
+- Take your time - your tutor is patient and supportive
+""")
+
         # Tutor selection cards with selection highlighting
         self.tutor_cards = gr.Dataset(
             components=[gr.HTML()],
@@ -216,6 +239,7 @@ class TutorSelectorUI:
         """
         return [
             self.title_display,
+            self.getting_started_accordion,
             self.tutor_cards,
             self.api_key_textbox,
             self.status_md,

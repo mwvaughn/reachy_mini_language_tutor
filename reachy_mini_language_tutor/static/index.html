@@ -20,6 +20,78 @@
         <p class="subtitle">Configure API keys, language profiles, and advanced settings.</p>
       </header>
 
+      <!-- Getting Started Guide (Collapsible) -->
+      <div id="getting-started-panel" class="panel panel-collapsible hidden">
+        <button class="panel-header panel-toggle" id="getting-started-toggle" aria-expanded="true">
+          <div class="panel-title">
+            <h3>🚀 Getting Started</h3>
+          </div>
+          <svg class="icon-chevron" width="20" height="20" viewBox="0 0 20 20">
+            <path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div id="getting-started-content" class="panel-content">
+          <div class="setting-group">
+            <!-- Step 1 -->
+            <div class="setting-section">
+              <div class="section-header">
+                <h4>Step 1: Enter Your API Key</h4>
+                <p class="section-hint">Required for voice conversation with your language tutor</p>
+              </div>
+              <div class="info-callout" style="background: linear-gradient(135deg, rgba(78, 205, 196, 0.12), rgba(78, 205, 196, 0.08)); border: 1px solid rgba(78, 205, 196, 0.3);">
+                <svg class="icon-info" width="20" height="20" viewBox="0 0 20 20" style="color: var(--info);">
+                  <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none" />
+                  <text x="10" y="14" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">i</text>
+                </svg>
+                <p>Your OpenAI API key starts with <code style="font-family: var(--font-mono); background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px;">sk-</code>. Enter it in the API Configuration section below. <a href="https://platform.openai.com/api-keys" target="_blank" class="link-external">Get your key →</a></p>
+              </div>
+            </div>
+
+            <div class="setting-divider"></div>
+
+            <!-- Step 2 -->
+            <div class="setting-section">
+              <div class="section-header">
+                <h4>Step 2: Choose Your Language Tutor</h4>
+                <p class="section-hint">Select from French, Spanish, German, Italian, Portuguese, or general practice</p>
+              </div>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">
+                Each tutor brings their native language and cultural expertise. Pick the language you'd like to practice in the "Language Profile" section below.
+              </p>
+            </div>
+
+            <div class="setting-divider"></div>
+
+            <!-- Step 3 -->
+            <div class="setting-section">
+              <div class="section-header">
+                <h4>Step 3: Start Your Conversation</h4>
+                <p class="section-hint">Once configured, your tutor is ready to chat!</p>
+              </div>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: var(--space-md);">
+                Simply start speaking naturally. Your robot tutor will listen, respond with voice and expressive movements, and help you learn.
+              </p>
+              <div class="info-callout" style="background: linear-gradient(135deg, rgba(255, 181, 71, 0.12), rgba(255, 181, 71, 0.08)); border: 1px solid rgba(255, 181, 71, 0.3);">
+                <svg class="icon-info" width="20" height="20" viewBox="0 0 20 20" style="color: var(--warning);">
+                  <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none" />
+                  <text x="10" y="14" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">💡</text>
+                </svg>
+                <div>
+                  <p style="margin-bottom: var(--space-xs); font-weight: 600;">Conversation Tips:</p>
+                  <ul style="margin: 0; padding-left: var(--space-lg); font-size: 0.85rem; line-height: 1.6;">
+                    <li>Speak at a natural pace - your tutor is patient</li>
+                    <li>Ask for grammar explanations when confused</li>
+                    <li>Request cultural context to deepen understanding</li>
+                    <li>Practice regularly for best results</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- API Configuration Panel -->
       <div id="api-panel" class="panel hidden">
         <div class="panel-header">
