@@ -23,7 +23,7 @@ class RememberTool(Tool):
                 "description": (
                     "The fact to remember, e.g., 'Learner struggles with verb conjugation', "
                     "'Prefers topics about travel and culture', 'Successfully used past tense today', "
-                    "'Learner's name is Alex', 'Lives in Boston', 'Works as an engineer'"
+                    "'Learner's first name is Alex', 'From the US, Northeast region', 'Works in engineering field'"
                 ),
             },
             "category": {
@@ -32,7 +32,7 @@ class RememberTool(Tool):
                 "description": (
                     "Category of the memory: progress (general notes), preference (what they like), "
                     "struggle (what's difficult), success (what they mastered), "
-                    "personal (identity, interests, background, goals)"
+                    "personal (first name, general region, occupation category, interests, learning goals - see privacy guidelines)"
                 ),
             },
         },

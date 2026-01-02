@@ -10,6 +10,7 @@ from pathlib import Path
 from dataclasses import dataclass
 
 from reachy_mini import ReachyMini
+
 # Import config to ensure .env is loaded before reading REACHY_MINI_CUSTOM_PROFILE
 from reachy_mini_language_tutor.config import config  # noqa: F401
 

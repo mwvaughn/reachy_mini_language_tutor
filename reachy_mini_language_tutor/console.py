@@ -421,10 +421,9 @@ class LocalStream:
         # GET /settings/idle -> get current idle signal configuration
         @self._settings_app.get("/settings/idle")
         def _get_idle_settings() -> JSONResponse:
-            return JSONResponse({
-                "enable_idle_signals": config.ENABLE_IDLE_SIGNALS,
-                "idle_signal_timeout": config.IDLE_SIGNAL_TIMEOUT
-            })
+            return JSONResponse(
+                {"enable_idle_signals": config.ENABLE_IDLE_SIGNALS, "idle_signal_timeout": config.IDLE_SIGNAL_TIMEOUT}
+            )
 
         # POST /settings/idle -> update and persist idle signal settings
         @self._settings_app.post("/settings/idle")
@@ -435,8 +434,7 @@ class LocalStream:
             # Validate timeout range
             if not (30 <= timeout <= 900):
                 return JSONResponse(
-                    {"ok": False, "error": "timeout_out_of_range", "min": 30, "max": 900},
-                    status_code=400
+                    {"ok": False, "error": "timeout_out_of_range", "min": 30, "max": 900}, status_code=400
                 )
 
             # Update config immediately (applies to current session)
@@ -594,8 +592,7 @@ class LocalStream:
                 self._robot.media.audio.clear_output_buffer()
             else:
                 logger.warning(
-                    "clear_output_buffer() not available on this SDK version, "
-                    "only clearing handler output queue"
+                    "clear_output_buffer() not available on this SDK version, only clearing handler output queue"
                 )
         self.handler.output_queue = asyncio.Queue()
 

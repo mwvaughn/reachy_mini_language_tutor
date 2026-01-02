@@ -33,16 +33,10 @@ class TutorSelectorUI:
 
         # Tutor metadata
         self.tutor_metadata = self._load_metadata()
-        self.tutor_profiles = [
-            {**data, "id": profile_id}
-            for profile_id, data in self.tutor_metadata.items()
-        ]
+        self.tutor_profiles = [{**data, "id": profile_id} for profile_id, data in self.tutor_metadata.items()]
 
         # Track current selection (find default profile index)
-        self.selected_index = next(
-            (i for i, p in enumerate(self.tutor_profiles) if p["id"] == "default"),
-            0
-        )
+        self.selected_index = next((i for i, p in enumerate(self.tutor_profiles) if p["id"] == "default"), 0)
 
     def _load_metadata(self) -> dict[str, Any]:
         """Load tutor metadata from JSON file.
@@ -101,9 +95,9 @@ class TutorSelectorUI:
         checkmark = ""
         if is_selected:
             selected_styles = f"""
-                background: linear-gradient(135deg, {profile['accent_color']}10 0%, {profile['accent_color']}20 100%);
-                border-left: 6px solid {profile['accent_color']};
-                box-shadow: 0 4px 16px {profile['accent_color']}40;
+                background: linear-gradient(135deg, {profile["accent_color"]}10 0%, {profile["accent_color"]}20 100%);
+                border-left: 6px solid {profile["accent_color"]};
+                box-shadow: 0 4px 16px {profile["accent_color"]}40;
                 transform: scale(1.02);
             """
             checkmark = f"""
@@ -111,7 +105,7 @@ class TutorSelectorUI:
                     position: absolute;
                     top: 12px;
                     right: 12px;
-                    background: {profile['accent_color']};
+                    background: {profile["accent_color"]};
                     color: white;
                     width: 28px;
                     height: 28px;
@@ -131,12 +125,12 @@ class TutorSelectorUI:
         <div class="tutor-card" style="{selected_styles} position: relative;">
             {checkmark}
             <div class="tutor-header">
-                <span class="tutor-flag">{profile['flag_emoji']}</span>
-                <h3 class="tutor-name">{profile['display_name']}</h3>
+                <span class="tutor-flag">{profile["flag_emoji"]}</span>
+                <h3 class="tutor-name">{profile["display_name"]}</h3>
             </div>
-            <p class="tutor-language">{profile['language']}</p>
-            <p class="tutor-description">{profile['short_description']}</p>
-            <span class="tutor-level">{profile['level']}</span>
+            <p class="tutor-language">{profile["language"]}</p>
+            <p class="tutor-description">{profile["short_description"]}</p>
+            <span class="tutor-level">{profile["level"]}</span>
         </div>
         """
 
@@ -156,7 +150,7 @@ class TutorSelectorUI:
             font-size: clamp(2rem, 5vw, 3rem);
             font-weight: 700;
             letter-spacing: -0.02em;
-            background: linear-gradient(135deg, {profile['accent_color']} 0%, {profile['accent_color']}99 50%, {profile['accent_color']}66 100%);
+            background: linear-gradient(135deg, {profile["accent_color"]} 0%, {profile["accent_color"]}99 50%, {profile["accent_color"]}66 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -164,7 +158,7 @@ class TutorSelectorUI:
             padding: 16px 0;
             text-align: center;
         ">
-            {profile['flag_emoji']} {profile['display_name']}
+            {profile["flag_emoji"]} {profile["display_name"]}
         </h1>
         """
 
@@ -239,6 +233,7 @@ class TutorSelectorUI:
             blocks: Gradio Blocks context (stream.ui).
 
         """
+
         # Tutor card selection handler
         async def _on_tutor_selected(evt: gr.SelectData) -> tuple[str, gr.Dataset, str]:
             """Handle tutor card selection and apply personality.
@@ -271,7 +266,11 @@ class TutorSelectorUI:
                 logger.error(f"Error applying tutor profile: {e}", exc_info=True)
                 # Keep current state on error
                 current_profile = self.tutor_profiles[self.selected_index]
-                return self._render_title(current_profile), gr.Dataset(samples=self._render_all_cards()), f"❌ Error switching tutor: {e}"
+                return (
+                    self._render_title(current_profile),
+                    gr.Dataset(samples=self._render_all_cards()),
+                    f"❌ Error switching tutor: {e}",
+                )
 
         # Wire the selection event within the Blocks context
         with blocks:

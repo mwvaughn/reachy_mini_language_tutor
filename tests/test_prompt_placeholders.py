@@ -1,6 +1,5 @@
 """Tests for prompt placeholder expansion in language tutor profiles."""
 
-
 import pytest
 
 from reachy_mini_language_tutor.prompts import (
@@ -83,14 +82,10 @@ class TestPlaceholderExpansion:
         expanded = _expand_prompt_includes(instructions)
 
         # Verify no unexpanded language_tutoring placeholders remain
-        assert (
-            "[language_tutoring/" not in expanded
-        ), f"Unexpanded placeholders found in {tutor}"
+        assert "[language_tutoring/" not in expanded, f"Unexpanded placeholders found in {tutor}"
 
         # Verify minimum expected length (shared content ~165 lines + unique content)
-        assert (
-            len(expanded) > 5000
-        ), f"Expanded instructions too short for {tutor}: {len(expanded)} chars"
+        assert len(expanded) > 5000, f"Expanded instructions too short for {tutor}: {len(expanded)} chars"
 
         # Verify key shared sections are present
         assert "## PROACTIVE ENGAGEMENT" in expanded
@@ -125,14 +120,12 @@ class TestPlaceholderExpansion:
             ("portuguese_tutor", "BRAZILIAN PORTUGUESE SPECIFICS"),
         ],
     )
-    def test_language_specific_sections_preserved(
-        self, tutor: str, language_specific_section: str
-    ):
+    def test_language_specific_sections_preserved(self, tutor: str, language_specific_section: str):
         """Test that language-specific teaching sections are preserved."""
         instructions_file = PROFILES_DIRECTORY / tutor / "instructions.txt"
         instructions = instructions_file.read_text(encoding="utf-8")
         expanded = _expand_prompt_includes(instructions)
 
-        assert (
-            language_specific_section in expanded
-        ), f"Language-specific section '{language_specific_section}' missing in {tutor}"
+        assert language_specific_section in expanded, (
+            f"Language-specific section '{language_specific_section}' missing in {tutor}"
+        )
