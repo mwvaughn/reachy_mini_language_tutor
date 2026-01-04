@@ -58,25 +58,19 @@ class GradioAdminUI:
         self.tutor_metadata = self._load_metadata()
 
         # Components (initialized in create_components)
-        # Layout components
+        # All components are flat - no nested contexts for Gradio 5.x compatibility
         self.title_display: gr.HTML
-        self.getting_started_accordion: gr.Accordion
-        self.advanced_accordion: gr.Accordion
-
-        # Profile components
+        self.getting_started_md: gr.Markdown
         self.profile_dropdown: gr.Dropdown
         self.profile_apply_btn: gr.Button
         self.profile_status: gr.Markdown
-
-        # API Key components
         self.openai_key_input: gr.Textbox
         self.openai_key_status: gr.Markdown
         self.openai_save_btn: gr.Button
         self.supermemory_key_input: gr.Textbox
         self.supermemory_key_status: gr.Markdown
         self.supermemory_save_btn: gr.Button
-
-        # Idle settings components
+        self.idle_md: gr.Markdown
         self.idle_enable_checkbox: gr.Checkbox
         self.idle_timeout_slider: gr.Slider
         self.idle_save_btn: gr.Button
@@ -235,8 +229,8 @@ class GradioAdminUI:
     def create_components(self) -> None:
         """Create all admin UI components.
 
-        Components are created without nested containers to ensure Gradio 5.x
-        compatibility when created outside a Blocks context.
+        All components are flat (no nested contexts) for Gradio 5.x compatibility.
+        This matches the pattern used in the reference gradio_personality.py.
         """
         # Check current state
         has_openai_key = bool(config.OPENAI_API_KEY and str(config.OPENAI_API_KEY).strip())
@@ -249,26 +243,16 @@ class GradioAdminUI:
             label="",
         )
 
-        # Getting Started section (uses only Markdown inside, which works)
-        self.getting_started_accordion = gr.Accordion(label="Getting Started", open=not has_openai_key)
-        with self.getting_started_accordion:
-            gr.Markdown("""### Quick Start Guide
+        # Getting Started section (flat Markdown, no accordion)
+        self.getting_started_md = gr.Markdown("""### Quick Start Guide
 
-**Step 1: Configure API Key**
-Enter your OpenAI API key below (starts with `sk-`). Required for voice conversation.
+**Step 1:** Configure your OpenAI API key below (starts with `sk-`)
 
-**Step 2: Choose Your Language**
-Select a language tutor from the dropdown. Each tutor specializes in their native language.
+**Step 2:** Select a language tutor from the dropdown
 
-**Step 3: Start Talking**
-Click the microphone button and start speaking! Your tutor will respond with voice and movement.
+**Step 3:** Click the microphone and start speaking!""")
 
-**Tips:**
-- Speak naturally at a normal pace
-- Ask for grammar explanations when unsure
-- Request cultural context to deepen understanding""")
-
-        # Language Profile Selector (flat, no accordion - Gradio 5.x compatible)
+        # Language Profile Selector
         self.profile_dropdown = gr.Dropdown(
             label="Select Language Tutor",
             choices=self._get_profile_choices(),
@@ -277,7 +261,7 @@ Click the microphone button and start speaking! Your tutor will respond with voi
         self.profile_apply_btn = gr.Button("Apply Tutor", variant="primary")
         self.profile_status = gr.Markdown("")
 
-        # API Key inputs (flat, no accordion wrapper)
+        # API Key inputs
         self.openai_key_input = gr.Textbox(
             label="OpenAI API Key (Required)",
             type="password",
@@ -310,17 +294,11 @@ Click the microphone button and start speaking! Your tutor will respond with voi
             variant="secondary" if has_supermemory_key else "primary",
         )
 
-        # Advanced Settings (uses only compatible components inside)
-        self.advanced_accordion = gr.Accordion(label="Advanced Settings", open=False)
-        with self.advanced_accordion:
-            gr.Markdown("### Idle Behavior")
-            gr.Markdown("*Disabling reduces API costs by 85-90%*")
-
-        # These need to be outside the accordion for Gradio 5.x compatibility
+        # Idle Settings (flat, no accordion)
+        self.idle_md = gr.Markdown("---\n### Idle Settings\n*Disabling reduces API costs by 85-90%*")
         self.idle_enable_checkbox = gr.Checkbox(
             label="Enable idle animations",
             value=config.ENABLE_IDLE_SIGNALS,
-            visible=False,  # Will be shown when accordion is opened via JS
         )
         self.idle_timeout_slider = gr.Slider(
             label="Idle timeout (seconds)",
@@ -328,20 +306,34 @@ Click the microphone button and start speaking! Your tutor will respond with voi
             maximum=900,
             step=30,
             value=config.IDLE_SIGNAL_TIMEOUT,
-            visible=False,
         )
-        self.idle_save_btn = gr.Button("Save Idle Settings", visible=False)
+        self.idle_save_btn = gr.Button("Save Idle Settings")
         self.idle_status = gr.Markdown("")
 
     def additional_inputs_ordered(self) -> list[Any]:
         """Return components that should be passed to Stream as additional_inputs.
 
         Returns:
-            List of Gradio components.
+            List of Gradio components in display order.
 
         """
         return [
             self.title_display,
+            self.getting_started_md,
+            self.profile_dropdown,
+            self.profile_apply_btn,
+            self.profile_status,
+            self.openai_key_input,
+            self.openai_key_status,
+            self.openai_save_btn,
+            self.supermemory_key_input,
+            self.supermemory_key_status,
+            self.supermemory_save_btn,
+            self.idle_md,
+            self.idle_enable_checkbox,
+            self.idle_timeout_slider,
+            self.idle_save_btn,
+            self.idle_status,
         ]
 
     def wire_events(
