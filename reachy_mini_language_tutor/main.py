@@ -122,10 +122,10 @@ def run(
     stream_manager: gr.Blocks | LocalStream | None = None
 
     if args.gradio:
-        from reachy_mini_language_tutor.gradio_tutor_selector import TutorSelectorUI
+        from reachy_mini_language_tutor.gradio_admin import GradioAdminUI
 
-        tutor_ui = TutorSelectorUI()
-        tutor_ui.create_components()
+        admin_ui = GradioAdminUI(instance_path=instance_path)
+        admin_ui.create_components()
 
         stream = Stream(
             handler=handler,
@@ -133,7 +133,7 @@ def run(
             modality="audio",
             additional_inputs=[
                 chatbot,
-                *tutor_ui.additional_inputs_ordered(),
+                *admin_ui.additional_inputs_ordered(),
             ],
             additional_outputs=[chatbot],
             additional_outputs_handler=update_chatbot,
@@ -159,7 +159,7 @@ def run(
         else:
             app = settings_app
 
-        tutor_ui.wire_events(handler, stream_manager)
+        admin_ui.wire_events(handler, stream_manager)
 
         app = gr.mount_gradio_app(app, stream.ui, path="/")
     else:
