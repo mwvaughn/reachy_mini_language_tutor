@@ -22,6 +22,7 @@
 *.kpp lfs
 *.clip lfs
 *.webm lfs
+*.mp4 lfs
 *.webp lfs
 *.svg lfs
 *.svgz lfs

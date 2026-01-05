@@ -15,7 +15,7 @@ tags:
 
 Practice conversational skills in French, Spanish, German, Italian, Portuguese, or any language through natural dialogue with an expressive robot companion. Your robot partner remembers your progress across sessions, celebrates your successes with dances and expressions, and helps when you get stuck.
 
-![Reachy Mini Dance](docs/assets/reachy_mini_dance.gif)
+![Reachy Language Partner Demo](docs/assets/language-partner-demo.mp4)
 
 ## Features
 
