@@ -17,6 +17,18 @@ def parse_args() -> Tuple[argparse.Namespace, list]:  # type: ignore
         help="Language profile to use (e.g., french_tutor, spanish_tutor)",
     )
     parser.add_argument(
+        "--source-language",
+        type=str,
+        default=None,
+        help="Learner's native language (e.g., chinese, spanish, english). Used for explanations.",
+    )
+    parser.add_argument(
+        "--target-language",
+        type=str,
+        default=None,
+        help="Language to learn (e.g., english, french, mandarin). The language being taught.",
+    )
+    parser.add_argument(
         "--head-tracker",
         choices=["yolo", "mediapipe", None],
         default=None,

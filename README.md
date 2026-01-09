@@ -34,6 +34,8 @@ https://github.com/user-attachments/assets/d3c131ed-856c-4cbd-8a29-767420eed220
 
 ## Language Profiles
 
+### Preset Tutors
+
 | Profile | Description |
 |---------|-------------|
 | `default` | Generic language partner that adapts to any language |
@@ -42,6 +44,14 @@ https://github.com/user-attachments/assets/d3c131ed-856c-4cbd-8a29-767420eed220
 | `german_tutor` | Lukas, a German tutor teaching Standard German (Hochdeutsch) |
 | `italian_tutor` | Chiara, an Italian tutor from Florence with cultural insights |
 | `portuguese_tutor` | Rafael, a Brazilian Portuguese tutor from São Paulo |
+
+### Dynamic Language Pairs
+
+Create custom tutors for **any language combination** using `--source-language` and `--target-language`. The tutor will explain concepts in your native language while teaching the target language.
+
+**Supported languages**: English, Chinese, Spanish, French, German, Italian, Portuguese, Japanese, Korean, Arabic, Russian, Dutch, Hindi
+
+Profiles are generated automatically using OpenAI and cached locally for future sessions.
 
 ## Quick Start
 
@@ -82,17 +92,19 @@ SUPERMEMORY_API_KEY=...                  # Optional, for persistent memory
 ### Start Practicing
 
 ```bash
-# Practice French
+# Use a preset tutor
 reachy-mini-language-tutor --profile french_tutor
-
-# Practice Spanish
 reachy-mini-language-tutor --profile spanish_tutor
 
-# Practice any language (robot will ask what you want to learn)
+# Create a custom language pair (any combination!)
+reachy-mini-language-tutor --source-language chinese --target-language english
+reachy-mini-language-tutor --source-language english --target-language japanese
+
+# Generic mode (robot will ask what you want to learn)
 reachy-mini-language-tutor
 ```
 
-Add `--gradio` for a web interface with live transcripts at http://127.0.0.1:7860/
+Add `--gradio` for a web interface with live transcripts and language selection at http://127.0.0.1:7860/
 
 ## How It Works
 

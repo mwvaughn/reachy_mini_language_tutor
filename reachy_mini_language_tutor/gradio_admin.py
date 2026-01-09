@@ -8,6 +8,7 @@ This module provides a comprehensive settings interface with:
 """
 
 from __future__ import annotations
+import asyncio
 import os
 import logging
 from typing import Any, Callable, Optional
@@ -61,6 +62,11 @@ class GradioAdminUI:
         # All components are flat - no nested contexts for Gradio 5.x compatibility
         self.title_display: gr.HTML
         self.getting_started_md: gr.Markdown
+        self.language_pair_md: gr.Markdown
+        self.source_language_dropdown: gr.Dropdown
+        self.target_language_dropdown: gr.Dropdown
+        self.language_pair_apply_btn: gr.Button
+        self.language_pair_status: gr.Markdown
         self.profile_dropdown: gr.Dropdown
         self.profile_apply_btn: gr.Button
         self.profile_status: gr.Markdown
@@ -252,13 +258,44 @@ class GradioAdminUI:
 
 **Step 3:** Click the microphone and start speaking!""")
 
-        # Language Profile Selector
+        # Language Pair Selector (dynamic mode)
+        self.language_pair_md = gr.Markdown("""---\n### 🌍 Custom Language Pair\n*Select any source → target language combination*""")
+
+        # Get supported languages for dropdowns
+        from reachy_mini_language_tutor.language_pairs import get_supported_languages, get_language_display_name
+        language_choices = [(get_language_display_name(lang), lang) for lang in get_supported_languages()]
+        language_choices.insert(0, ("-- Not selected --", ""))
+
+        # Default source language is English if not configured
+        source_config = getattr(config, "SOURCE_LANGUAGE", None)
+        current_source = source_config if source_config is not None else "english"
+        
+        target_config = getattr(config, "TARGET_LANGUAGE", None)
+        current_target = target_config if target_config is not None else ""
+
+        self.source_language_dropdown = gr.Dropdown(
+            label="I speak (native language)",
+            choices=language_choices,
+            value=current_source,
+            info="Your native language for explanations",
+        )
+        self.target_language_dropdown = gr.Dropdown(
+            label="I want to learn",
+            choices=language_choices,
+            value=current_target,
+            info="The language you want to practice",
+        )
+        self.language_pair_apply_btn = gr.Button("🚀 Start Custom Tutor", variant="primary")
+        self.language_pair_status = gr.Markdown("*Select a target language and click Start*")
+
+        # Preset Language Profile Selector (alternative mode)
         self.profile_dropdown = gr.Dropdown(
-            label="Select Language Tutor",
+            label="Or select a preset tutor",
             choices=self._get_profile_choices(),
             value=current_profile,
+            info="Pre-configured tutor personalities",
         )
-        self.profile_apply_btn = gr.Button("Apply Tutor", variant="primary")
+        self.profile_apply_btn = gr.Button("Apply Preset", variant="secondary")
         self.profile_status = gr.Markdown("")
 
         # API Key inputs
@@ -320,6 +357,11 @@ class GradioAdminUI:
         return [
             self.title_display,
             self.getting_started_md,
+            self.language_pair_md,
+            self.source_language_dropdown,
+            self.target_language_dropdown,
+            self.language_pair_apply_btn,
+            self.language_pair_status,
             self.profile_dropdown,
             self.profile_apply_btn,
             self.profile_status,
@@ -473,10 +515,95 @@ class GradioAdminUI:
                 outputs=[self.supermemory_key_input, self.supermemory_key_status, self.supermemory_save_btn],
             )
 
+            # --- Language Pair Events ---
+            async def apply_language_pair(source_lang: str, target_lang: str):
+                """Apply a custom language pair tutor (generates profile with OpenAI if needed)."""
+                from reachy_mini_language_tutor.config import set_language_pair, set_custom_profile
+                from reachy_mini_language_tutor.language_pairs import (
+                    get_language_display_name,
+                    LANGUAGE_DATA,
+                    has_cached_profile,
+                )
+
+                # Validate both languages are selected
+                if not source_lang or not target_lang:
+                    yield (
+                        self._render_title(self._get_current_profile()),
+                        "⚠️ Please select both source and target languages",
+                    )
+                    return
+
+                if source_lang == target_lang:
+                    yield (
+                        self._render_title(self._get_current_profile()),
+                        "⚠️ Source and target languages must be different",
+                    )
+                    return
+
+                source_name = get_language_display_name(source_lang)
+                target_name = get_language_display_name(target_lang)
+
+                # Check if we need to generate (show progress if so)
+                is_cached = has_cached_profile(source_lang.lower(), target_lang.lower())
+                if not is_cached:
+                    yield (
+                        self._render_title(self._get_current_profile()),
+                        f"## ⏳ Generating tutor...\n\n**{source_name} → {target_name}**\n\n*Creating personalized tutor with AI (10-30 sec, first time only)*",
+                    )
+                else:
+                    yield (
+                        self._render_title(self._get_current_profile()),
+                        f"## ⏳ Loading tutor...\n\n**{source_name} → {target_name}**",
+                    )
+
+                try:
+                    # Clear any existing profile (language pair takes priority)
+                    set_custom_profile(None)
+                    set_language_pair(source_lang, target_lang)
+
+                    # Apply via handler (this triggers profile generation and session restart)
+                    logger.info(f"Applying language pair: {source_lang} → {target_lang}")
+                    await handler.apply_personality(None)
+
+                    # Generate new title
+                    target_data = LANGUAGE_DATA.get(target_lang.lower(), {})
+                    source_data = LANGUAGE_DATA.get(source_lang.lower(), {})
+
+                    new_title = f"""
+                    <h1 style="
+                        font-family: 'Outfit', system-ui, sans-serif;
+                        font-size: clamp(1.5rem, 4vw, 2.5rem);
+                        font-weight: 700;
+                        letter-spacing: -0.02em;
+                        background: linear-gradient(135deg, #E63946 0%, #457B9D 100%);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-clip: text;
+                        margin: 0; padding: 8px 0; text-align: center;
+                    ">
+                        {source_data.get('flag', '🌍')} → {target_data.get('flag', '🌍')} {target_name} Tutor
+                    </h1>
+                    """
+
+                    yield new_title, f"## ✅ Ready!\n\n**{source_name} → {target_name}** tutor is ready. Start speaking!"
+                except Exception as e:
+                    logger.error(f"Error applying language pair: {e}", exc_info=True)
+                    yield self._render_title(self._get_current_profile()), "## ❌ Error\n\nAn error occurred while applying the language pair. Check logs for details."
+
+            self.language_pair_apply_btn.click(
+                fn=apply_language_pair,
+                inputs=[self.source_language_dropdown, self.target_language_dropdown],
+                outputs=[self.title_display, self.language_pair_status],
+            )
+
             # --- Profile Events ---
             async def apply_profile(profile_name: str) -> tuple[str, str]:
                 """Apply a language profile immediately."""
                 try:
+                    # Clear any language pair when using a preset profile
+                    from reachy_mini_language_tutor.config import set_language_pair
+                    set_language_pair(None, None)
+
                     # Convert to internal name
                     sel = None if profile_name == DEFAULT_OPTION else profile_name
                     status = await handler.apply_personality(sel)

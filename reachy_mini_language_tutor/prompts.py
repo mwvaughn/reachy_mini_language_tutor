@@ -62,7 +62,26 @@ def _expand_prompt_includes(content: str) -> str:
 
 
 def get_session_instructions() -> str:
-    """Get session instructions, loading from REACHY_MINI_CUSTOM_PROFILE if set."""
+    """Get session instructions, loading from language pair, profile, or default.
+
+    Priority order:
+    1. Dynamic language pair (if SOURCE_LANGUAGE and TARGET_LANGUAGE are set)
+    2. Custom profile (if REACHY_MINI_CUSTOM_PROFILE is set)
+    3. Default prompt
+    """
+    # First, check for dynamic language pair
+    from reachy_mini_language_tutor.language_pairs import (
+        is_language_pair_configured,
+        generate_dynamic_instructions,
+    )
+
+    if is_language_pair_configured():
+        instructions = generate_dynamic_instructions()
+        if instructions:
+            logger.info("Using dynamic language pair instructions")
+            return instructions
+
+    # Fall back to profile-based instructions
     profile = config.REACHY_MINI_CUSTOM_PROFILE
     if not profile:
         logger.info(f"Loading default prompt from {PROMPTS_LIBRARY_DIRECTORY / 'default_prompt.txt'}")
@@ -90,9 +109,21 @@ def get_session_instructions() -> str:
 def get_session_voice(default: str = "cedar") -> str:
     """Resolve the voice to use for the session.
 
-    If a custom profile is selected and contains a voice.txt, return its
-    trimmed content; otherwise return the provided default ("cedar").
+    Priority order:
+    1. Dynamic language pair voice (if configured)
+    2. Profile voice.txt
+    3. Default voice
     """
+    # First, check for dynamic language pair
+    from reachy_mini_language_tutor.language_pairs import (
+        is_language_pair_configured,
+        get_dynamic_voice,
+    )
+
+    if is_language_pair_configured():
+        return get_dynamic_voice()
+
+    # Fall back to profile-based voice
     profile = config.REACHY_MINI_CUSTOM_PROFILE
     if not profile:
         return default

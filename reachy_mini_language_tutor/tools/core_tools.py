@@ -89,7 +89,11 @@ class Tool(abc.ABC):
 
 # Registry & specs (dynamic)
 def _load_profile_tools() -> None:
-    """Load tools based on profile's tools.txt file."""
+    """Load tools based on profile's tools.txt file.
+
+    When using dynamic language pairs (SOURCE_LANGUAGE + TARGET_LANGUAGE),
+    tools are loaded from the 'default' profile since no specific profile is set.
+    """
     # Determine which profile to use
     profile = config.REACHY_MINI_CUSTOM_PROFILE or "default"
     logger.info(f"Loading tools for profile: {profile}")

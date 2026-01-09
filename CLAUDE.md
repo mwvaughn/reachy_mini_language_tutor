@@ -12,7 +12,7 @@ Reachy Language Partner - language learning companion for Reachy Mini robot with
 
 **Setup**: `uv sync` (base), `uv sync --extra all_vision` (with vision), `uv sync --group dev` (dev tools)
 
-**Run**: `reachy-mini-language-tutor` (console), `--gradio` (web UI), `--profile <name>` (custom profile), `--local-vision`, `--wireless-version`, `--no-camera`
+**Run**: `reachy-mini-language-tutor` (console), `--gradio` (web UI), `--profile <name>` (custom profile), `--source-language <lang>` + `--target-language <lang>` (dynamic language pair), `--local-vision`, `--wireless-version`, `--no-camera`
 
 **Dev**: Always use `uv run` prefix: `uv run ruff check .`, `uv run ruff format .`, `uv run mypy reachy_mini_language_tutor/`, `uv run pytest`
 
@@ -63,7 +63,9 @@ Default: OpenAI gpt-realtime | Local: SmolVLM2 (`--local-vision`) | Face trackin
 
 ## Language Profiles
 
-Six tutor profiles in `profiles/`: `default`, `french_tutor`, `spanish_tutor`, `german_tutor`, `italian_tutor`, `portuguese_tutor`
+Six preset tutor profiles in `profiles/`: `default`, `french_tutor`, `spanish_tutor`, `german_tutor`, `italian_tutor`, `portuguese_tutor`
+
+**Dynamic Language Pairs**: Use `--source-language <lang> --target-language <lang>` for any language combination. Profiles are generated dynamically using OpenAI and cached in `generated_profiles/`.
 
 **Profile structure** (`profiles/<name>/`):
 - `instructions.txt`: System prompt with `[placeholder]` syntax (shared prompts from `prompts/language_tutoring/` + unique content)
@@ -71,7 +73,7 @@ Six tutor profiles in `profiles/`: `default`, `french_tutor`, `spanish_tutor`, `
 - `proactive.txt`, `language.txt`, `voice.txt`: Behavioral config
 - Optional Python files: Custom tools (subclass `Tool` from `tools/core_tools.py`)
 
-**Load**: `--profile <name>`, `REACHY_MINI_CUSTOM_PROFILE=<name>` in `.env`, or Gradio UI (instructions hot-reload, tools need restart)
+**Load**: `--profile <name>`, `--source-language + --target-language`, `REACHY_MINI_CUSTOM_PROFILE=<name>` in `.env`, or Gradio UI
 
 ## Tutor Behavior
 
