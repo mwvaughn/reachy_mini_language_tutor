@@ -37,6 +37,10 @@ class Config:
     REACHY_MINI_CUSTOM_PROFILE = os.getenv("REACHY_MINI_CUSTOM_PROFILE")
     logger.debug(f"Custom Profile: {REACHY_MINI_CUSTOM_PROFILE}")
 
+    # Language pair configuration (for dynamic language selection)
+    SOURCE_LANGUAGE = os.getenv("REACHY_SOURCE_LANGUAGE")  # Learner's native language
+    TARGET_LANGUAGE = os.getenv("REACHY_TARGET_LANGUAGE")  # Language to learn
+
     # Idle signal configuration (cost optimization)
     ENABLE_IDLE_SIGNALS = os.getenv("ENABLE_IDLE_SIGNALS", "true").lower() == "true"
     IDLE_SIGNAL_TIMEOUT = int(os.getenv("IDLE_SIGNAL_TIMEOUT", "300"))  # Default 5 minutes
@@ -65,3 +69,31 @@ def set_custom_profile(profile: str | None) -> None:
             _os.environ.pop("REACHY_MINI_CUSTOM_PROFILE", None)
     except Exception:
         pass
+
+
+def set_language_pair(source_language: str | None, target_language: str | None) -> None:
+    """Update the source and target language pair at runtime.
+
+    Args:
+        source_language: The learner's native language (e.g., "chinese", "spanish")
+        target_language: The language being learned (e.g., "english", "french")
+    """
+    try:
+        config.SOURCE_LANGUAGE = source_language
+        config.TARGET_LANGUAGE = target_language
+    except Exception as e:
+        logger.warning(f"Failed to update config for language pair: {e}")
+    try:
+        import os as _os
+
+        if source_language:
+            _os.environ["REACHY_SOURCE_LANGUAGE"] = source_language
+        else:
+            _os.environ.pop("REACHY_SOURCE_LANGUAGE", None)
+
+        if target_language:
+            _os.environ["REACHY_TARGET_LANGUAGE"] = target_language
+        else:
+            _os.environ.pop("REACHY_TARGET_LANGUAGE", None)
+    except Exception as e:
+        logger.warning(f"Failed to update env vars for language pair: {e}")

@@ -59,3 +59,6 @@ cache/
 
 # User-created personalities (managed by UI)
 src/reachy_mini_language_tutor/profiles/user_personalities/
+
+# Generated language pair profiles (OpenAI-generated, cached locally)
+reachy_mini_language_tutor/generated_profiles/

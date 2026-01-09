@@ -34,6 +34,23 @@ def main() -> None:
     if args.profile:
         set_custom_profile(args.profile)
 
+    # Set language pair from CLI arguments if provided
+    # Language pair mode takes priority over profile
+    if args.source_language and args.target_language:
+        from reachy_mini_language_tutor.config import set_language_pair
+
+        # Clear any existing profile when using language pair mode
+        set_custom_profile(None)
+        set_language_pair(args.source_language, args.target_language)
+    elif args.source_language or args.target_language:
+        # Warn if only one provided
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.warning(
+            "Both --source-language and --target-language must be provided to use dynamic language pair mode. "
+            "Ignoring incomplete language pair configuration."
+        )
+
     run(args)
 
 
